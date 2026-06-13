@@ -1,0 +1,92 @@
+# CSEZ Quest Video URLs
+# YouTube videos with quest/walkthrough data for the CSEZ wiki
+# Organized by channel and content type
+# Last updated: June 2026
+
+## @Orbb_ — ExfilZone Quest Guides (40 videos)
+# YouTube channel: https://www.youtube.com/@Orbb_
+# Auto-generated English subtitles available
+
+https://www.youtube.com/watch?v=e_mYY4A1N4E   # Taste of Life 3
+https://www.youtube.com/watch?v=dXdeD28sz-g   # Signal Supplies
+https://www.youtube.com/watch?v=gD0U4mPBr20   # Coastal Antenna
+https://www.youtube.com/watch?v=0tdfdkgqTNI   # West Tower Secret Room Map
+https://www.youtube.com/watch?v=1LRB5kiAFco   # Info for Aid
+https://www.youtube.com/watch?v=erWbyo7xkMg   # A Farewell Gift
+https://www.youtube.com/watch?v=miEeRdwoQio   # Virtual Realities
+https://www.youtube.com/watch?v=jFO6QVaruOE   # The Veteran's Courts
+https://www.youtube.com/watch?v=6RkKEAxi38U   # Hidden in Plain Sight
+https://www.youtube.com/watch?v=ejYIclg7rTM   # Treasure in the Sewage
+https://www.youtube.com/watch?v=RNm8P0svT_w   # Expansion Protocol
+https://www.youtube.com/watch?v=D3-2mYu9A2Y   # Toxicology Recovery
+https://www.youtube.com/watch?v=WeqfJSPz8xw   # Suburban Emergency Med Network
+https://www.youtube.com/watch?v=DOMGRmisKzQ   # River Valley Pylon Security
+https://www.youtube.com/watch?v=ykeTbQWxCR4   # Hack to Play
+https://www.youtube.com/watch?v=eg47zb8mjFU   # NTG Medical Reports
+https://www.youtube.com/watch?v=vIAOGMYb50g   # Clifton Recon
+https://www.youtube.com/watch?v=SzvgIvU412A   # Lost and Found
+https://www.youtube.com/watch?v=-2TEGKaABC4   # Cold Hard Cash 3
+https://www.youtube.com/watch?v=Mo99k_qEoqY   # Cold Hard Cash 2
+https://www.youtube.com/watch?v=l5a_C-P5vDQ   # New Bridge Maintenance
+https://www.youtube.com/watch?v=0WTldk6bbms   # Dam First Aid Point
+https://www.youtube.com/watch?v=NkQ0O-C8NA0   # Disguised Baseball
+https://www.youtube.com/watch?v=7TktijiXMH8   # Hide Discs
+https://www.youtube.com/watch?v=4_BDk1p_p9Y   # Retrieve ARK Disks
+https://www.youtube.com/watch?v=E6DenCBgV8    # Pre-war Recon
+https://www.youtube.com/watch?v=CuvBiNjSNpk   # Transport Clues
+https://www.youtube.com/watch?v=zqg5BSp3FB0   # Wyeth Farm
+https://www.youtube.com/watch?v=GXrMjc94nC8   # Dock Intel
+https://www.youtube.com/watch?v=sV5szQpsMCk   # Clifton Hidden Room Radio
+https://www.youtube.com/watch?v=zT-42UtFkEM   # Meg's Camera
+https://www.youtube.com/watch?v=xkVBem672vQ   # My Convoy
+https://www.youtube.com/watch?v=hGyftrMvsr8   # The Lost Medical Journal
+https://www.youtube.com/watch?v=mqlHcQgDEmg   # The Sausage Trap
+https://www.youtube.com/watch?v=uRz5EiWnBvw   # Get Back My Shades
+https://www.youtube.com/watch?v=0eg3PQZk7io   # Dam Aircraft Recon
+https://www.youtube.com/watch?v=c0SBnSnF3AM   # Supply Shortage 1
+https://www.youtube.com/watch?v=45OV1aKC1WA   # Referral Gift
+https://www.youtube.com/watch?v=QnVQXqvzyjQ   # Recover My Gunpowder
+https://www.youtube.com/watch?v=pSfCKXVe6oM   # New Friends
+
+## @RadFoxVRUniversity — Trader Quest Guides (23 videos)
+# YouTube channel: https://www.youtube.com/@RadFoxVRUniversity
+# Auto-generated English subtitles available; some videos also have Russian
+
+# ── Wipe & Hideout Guides ──
+https://www.youtube.com/watch?v=6ouHo-xiLWU   # Everything About New Wipe Spring 2026
+https://www.youtube.com/watch?v=0K24e-ADSjY   # Full Hideout Upgrade Spring 2026
+https://www.youtube.com/watch?v=QVclsTg2C4w   # All Exchanges this Wipe
+https://www.youtube.com/watch?v=Yj6RYYH7qFw   # Full Hideout Upgrade Everything
+https://www.youtube.com/watch?v=7IA5rDZTJiM   # Where to Find Rare Items for Hideout Upgrades
+https://www.youtube.com/watch?v=ClICoz4imGY   # New Top Tier Ammo Exchanges
+
+# ── Johnny (TRUPIK'S) Quests ──
+https://www.youtube.com/watch?v=HvtEwmyPAWY   # Johnny's Missions - Complete
+https://www.youtube.com/watch?v=Sh-0IsXjFf8   # Johnny's Missions Part 1
+
+# ── Maggie (N.T.G.) Quests ──
+https://www.youtube.com/watch?v=byQDb-qvWCg   # Maggie's Missions - Complete
+https://www.youtube.com/watch?v=3aAUdX4fUDI   # Maggie's Missions Part 1
+https://www.youtube.com/watch?v=VN1Z5EKevAA   # Maggie's Missions Part 2
+
+# ── Igor (Regiment) Quests ──
+https://www.youtube.com/watch?v=NCBPbrnh590   # Igor's Missions - Complete
+https://www.youtube.com/watch?v=-LQjfpCRGr8   # Igor's Missions Part 1
+https://www.youtube.com/watch?v=URZl3Qr1GUI   # Igor's Missions Part 2
+
+# ── Maximilian (Boulder Forge) Quests ──
+https://www.youtube.com/watch?v=JIPJU5KuFg8   # Maximillian's Missions - Complete
+https://www.youtube.com/watch?v=h8AFe8ypIec   # Maximilian Missions Part 1
+https://www.youtube.com/watch?v=rx02VXF54F0   # Maximillian's Missions Part 2
+
+# ── Anna Quests ──
+https://www.youtube.com/watch?v=pDeM677A_J8   # Anna's Missions - Complete
+https://www.youtube.com/watch?v=q3X-vsWp6J4   # Anna's Missions Part 1
+
+# ── Tommy (ARK) Quests ──
+https://www.youtube.com/watch?v=0RWMPnhHb5o   # Tommy ARK All 37 Quests
+https://www.youtube.com/watch?v=HLNHp2vxesQ   # Tommy ARK Missions Part 1
+https://www.youtube.com/watch?v=SBv6-yE67IQ   # Tommy ARK Missions Part 2
+
+# ── Seasonal ──
+https://www.youtube.com/watch?v=v7KrcSDVgZU   # X-mas Event All 5 Tasks

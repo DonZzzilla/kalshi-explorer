@@ -1,0 +1,9 @@
+GitHub Pages web dev: .nojekyll, CDN stale 10-30 min (delete+recreate to bust). CORS blocks APIs — use demo data. write_file masks *** <style>/<script> tags corrupts {{ }}. Terminal PATH bloat → use env PATH prefix. JS: node --check for parse errors, external .js files only, requestAnimationFrame for Chart.js tab switch. UI: portal tooltips (position:fixed+getBoundingClientRect), dark overlay for readability, 960px max-width, whole-number input validation (buyRaw!==String(parsed)).
+§
+Don prefers not be asked for credentials repeatedly — try env/config/stored tokens first, ask only when truly stuck.
+§
+Multi-wiki: 4 wikis — GoT, CSEZ, BOA, SilentNorth. BOA wiki pages: LFG (237), Getting Started (238), FAQ (239). Tabormap fix: Chodov Mall id "mall"→"chodov-mall". Got-patch-bot: 15 DM commands (!work, !home, !news, !weather, !gas, !redditday, !redditweek, !got, !csez, !scan, !status, !pi, !build, !g, !c). @bot.command() decorators — appear in !help.
+§
+Fauna report format (2026-07-11): 3 specimens rotating Spider→Snake→Creepy Crawler. Template: emoji SPECIMENT [LETTER] — [COMMON NAME] / scientific name / region. Sections: TACTICAL ASSESSMENT, KEY INTEL (bullets with ·), GHOSTS OF TABOR / BOA RELEVANCE. NEVER reference "Game of Thrones" — always "Ghosts of Tabor" the GAME. Sent via himalaya email CLI.
+§
+CSEZ wiki edits completed (2026-07): linked all 7 boss names on Bosses page to individual pages, added Ravager to Suburbs bosses section, created Template:Main and Template:Boss templates, created Quests hub page with tables per map. miraheze-wiki-management skill created in devops/ category — covers login workflow, edit patterns, common wiki markup, pitfalls.
