@@ -600,7 +600,7 @@ body[data-tier="indepth"] .tier-badge{background:rgba(255,0,170,0.2);color:var(-
       <strong style="color:var(--cyan)">GET</strong> /v2/markets/&#123;ticker&#125; &#8212; Single market detail<br>
       <strong style="color:var(--cyan)">GET</strong> /v2/events &#8212; List all events<br>
       <strong style="color:var(--cyan)">GET</strong> /v2/events/&#123;id&#125;/markets &#8212; Markets in an event<br><br>
-      Base URL: <code style="color:var(--green);background:rgba(0,0,0,0.3);padding:0.2rem 0.4rem;border-radius:3px">https://external-api.kalshi.com</code><br>
+      Base URL: <code style="color:var(--green);background:rgba(0,0,0,0.3);padding:0.2rem 0.4rem;border-radius:3px">https://external-api.kalshi.com/trade-api/v2</code><br>
       Auth: None &bull; Rate limit: ~100 requests per minute
     </div>
   </div>
@@ -906,7 +906,7 @@ body[data-tier="indepth"] .tier-badge{background:rgba(255,0,170,0.2);color:var(-
       <li>SSH into your Pi: <code>ssh donzzz@raspberrypi.local</code></li>
       <li>Install deps: <code>sudo apt install python3-pip sqlite3 -y</code></li>
       <li>Create the bot: <code>mkdir ~/kalshi-bot && cd ~/kalshi-bot</code></li>
-      <li>Write <code>scan.py</code> — a 30-line Python script using <code>requests</code> to hit <code>https://external-api.kalshi.com/v2/markets?active=true</code></li>
+      <li>Write <code>scan.py</code> — a 30-line Python script using <code>requests</code> to hit <code>https://external-api.kalshi.com/trade-api/v2/markets?status=open</code></li>
       <li>Test it: <code>python3 scan.py</code> — should print JSON</li>
       <li>Hook Discord: create a webhook in your server, paste URL into <code>~/.hermes/.env</code> as <code>DISCORD_WEBHOOK_URL=...</code></li>
       <li>Schedule it: <code>crontab -e</code> → <code>*/15 * * * * /usr/bin/python3 /home/donzzz/kalshi-bot/scan.py &gt;&gt; /home/donzzz/kalshi-bot/bot.log 2&gt;&amp;1</code></li>
@@ -938,6 +938,6 @@ body[data-tier="indepth"] .tier-badge{background:rgba(255,0,170,0.2);color:var(-
   </div>
 </div>
 
-<script src="app.js?v=3"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>

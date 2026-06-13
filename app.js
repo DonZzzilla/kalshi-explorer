@@ -56,24 +56,90 @@ document.querySelectorAll('.nav-links a').forEach(function(a){
   });
 });
 
-// ===== DEMO DATA =====
+// ===== DEMO DATA (new schema, used as fallback) =====
 var demoData=[
-  {ticker:'KXTRADE26',title:'US-China Trade Deal 2026',outcomePrices:'[15,85]',volume:89000000,status:'open'},
-  {ticker:'KXBTC',title:'Bitcoin Above 100K',outcomePrices:'[22,78]',volume:23000000,status:'open'},
-  {ticker:'KXETH',title:'Ethereum Above 5000',outcomePrices:'[48,52]',volume:1500000,status:'open'},
-  {ticker:'KXINFLATION',title:'CPI Under 3% Dec 2026',outcomePrices:'[35,65]',volume:4300000,status:'open'},
-  {ticker:'KXRATE',title:'Fed Rate Below 4%',outcomePrices:'[65,35]',volume:5600000,status:'open'},
-  {ticker:'KXSNP500',title:'S&P 500 Above 7000',outcomePrices:'[8,92]',volume:120000000,status:'open'},
-  {ticker:'KXDJIA',title:'Dow Above 45000',outcomePrices:'[12,88]',volume:95000000,status:'open'},
-  {ticker:'KXNASDAQ',title:'Nasdaq Above 20000',outcomePrices:'[18,82]',volume:110000000,status:'open'},
-  {ticker:'KXHOUSING',title:'Housing Market Crash 2026',outcomePrices:'[5,95]',volume:78000000,status:'open'},
-  {ticker:'KXGOLD',title:'Gold Above 3000',outcomePrices:'[28,72]',volume:34000000,status:'open'},
-  {ticker:'KXUNEMP',title:'Unemployment Above 5%',outcomePrices:'[42,58]',volume:21000000,status:'open'},
-  {ticker:'KXRECESSION',title:'Recession in 2026',outcomePrices:'[30,70]',volume:45000000,status:'open'}
+  {ticker:'KXTRADE26',title:'US-China Trade Deal 2026',yes:15,no:85,volume:89000000,status:'active'},
+  {ticker:'KXBTC',title:'Bitcoin Above 100K',yes:22,no:78,volume:23000000,status:'active'},
+  {ticker:'KXETH',title:'Ethereum Above 5000',yes:48,no:52,volume:1500000,status:'active'},
+  {ticker:'KXINFLATION',title:'CPI Under 3% Dec 2026',yes:35,no:65,volume:4300000,status:'active'},
+  {ticker:'KXRATE',title:'Fed Rate Below 4%',yes:65,no:35,volume:5600000,status:'active'},
+  {ticker:'KXSNP500',title:'S&P 500 Above 7000',yes:8,no:92,volume:120000000,status:'active'},
+  {ticker:'KXDJIA',title:'Dow Above 45000',yes:12,no:88,volume:95000000,status:'active'},
+  {ticker:'KXNASDAQ',title:'Nasdaq Above 20000',yes:18,no:82,volume:110000000,status:'active'},
+  {ticker:'KXHOUSING',title:'Housing Market Crash 2026',yes:5,no:95,volume:78000000,status:'active'},
+  {ticker:'KXGOLD',title:'Gold Above 3000',yes:28,no:72,volume:34000000,status:'active'},
+  {ticker:'KXUNEMP',title:'Unemployment Above 5%',yes:42,no:58,volume:21000000,status:'active'},
+  {ticker:'KXRECESSION',title:'Recession in 2026',yes:30,no:70,volume:45000000,status:'active'}
 ];
 
 var allMarkets=[];
 var currentFilter='all';
+var lastSource='demo'; // 'live-corsproxy' | 'live-corssh' | 'demo' | null
+
+// ===== KALSHI API ENDPOINT =====
+// New endpoint as of 2026: /trade-api/v2/markets
+// CORS proxies (try in order until one works). Direct browser fetch is blocked.
+var KALSHI_BASE='https://external-api.kalshi.com/trade-api/v2/markets?status=open&limit=200';
+var CORS_PROXIES=[
+  function(u){return 'https://corsproxy.io/?url='+encodeURIComponent(u);},
+  function(u){return 'https://proxy.cors.sh/?'+u;} // cors.sh uses the URL as a path/query
+];
+
+async function fetchKalshi(){
+  for(var i=0;i<CORS_PROXIES.length;i++){
+    var proxyFn=CORS_PROXIES[i];
+    var url=proxyFn(KALSHI_BASE);
+    try{
+      var resp=await fetch(url,{cache:'no-store'});
+      if(!resp.ok)continue;
+      var data=await resp.json();
+      if(data && data.markets && data.markets.length>0){
+        return {markets:data.markets,source:i===0?'live-corsproxy':'live-corssh'};
+      }
+    }catch(e){/* try next proxy */}
+  }
+  return null;
+}
+
+// Normalize a raw Kalshi market into our internal shape
+function normalizeMarket(m){
+  // Prices are dollar strings like "0.6500" — convert to cents
+  function toCents(s){
+    if(s===null||s===undefined||s==='')return null;
+    var n=parseFloat(s);
+    if(isNaN(n))return null;
+    return Math.round(n*100);
+  }
+  // Use mid of bid/ask if available; fall back to last_price
+  var yesBid=toCents(m.yes_bid_dollars);
+  var yesAsk=toCents(m.yes_ask_dollars);
+  var noBid=toCents(m.no_bid_dollars);
+  var noAsk=toCents(m.no_ask_dollars);
+  var yes=null,no=null;
+  if(yesBid!==null&&yesAsk!==null)yes=Math.round((yesBid+yesAsk)/2);
+  else if(yesBid!==null)yes=yesBid;
+  else if(yesAsk!==null)yes=yesAsk;
+  else{var lp=toCents(m.last_price_dollars);if(lp!==null)yes=lp;}
+  if(noBid!==null&&noAsk!==null)no=Math.round((noBid+noAsk)/2);
+  else if(noBid!==null)no=noBid;
+  else if(noAsk!==null)no=noAsk;
+  else if(yes!==null)no=100-yes;
+  if(yes===null||no===null){yes=yes||50;no=no||50;}
+  // Volume: prefer 24h if non-zero, else total
+  var v24=parseFloat(m.volume_24h_fp||'0');
+  var vTot=parseFloat(m.volume_fp||'0');
+  var volume=(v24>0?v24:vTot)*100; // API returns dollars in cents when *_fp is used
+  return {
+    ticker:m.ticker,
+    title:m.title,
+    yes:yes,
+    no:no,
+    volume:Math.round(volume),
+    status:m.status||'active',
+    open_time:m.open_time,
+    close_time:m.close_time
+  };
+}
 
 // ===== SCAN MARKETS =====
 async function scanMarkets(){
@@ -81,32 +147,39 @@ async function scanMarkets(){
   var mc=document.getElementById('market-count');
   st.textContent='SCANNING...';
   document.getElementById('api-status').querySelector('.dot').className='dot offline';
-  document.getElementById('scanner-results').innerHTML='<div class="loading"><div class="spinner"></div>Fetching markets...</div>';
+  document.getElementById('scanner-results').innerHTML='<div class="loading"><div class="spinner"></div>Fetching live markets from Kalshi...</div>';
 
   try{
-    var resp=await fetch('https://external-api.kalshi.com/v2/markets?limit=50&active=true');
-    var data=await resp.json();
-    if(data && data.markets && data.markets.length>0){
-      allMarkets=data.markets;
-      st.textContent='LIVE - '+allMarkets.length+' MARKETS';
+    var result=await fetchKalshi();
+    if(result && result.markets && result.markets.length>0){
+      allMarkets=result.markets.map(normalizeMarket).filter(function(m){return m.yes>0&&m.yes<100;});
+      lastSource=result.source;
+      var srcLabel=result.source==='live-corsproxy'?'LIVE (corsproxy.io)':'LIVE (proxy.cors.sh)';
+      st.textContent=srcLabel+' — '+allMarkets.length+' MARKETS';
       document.getElementById('api-status').querySelector('.dot').className='dot online';
       mc.style.display='inline-flex';
       document.getElementById('market-count-text').textContent=allMarkets.length+' MARKETS';
     }else{
-      throw new Error('No data');
+      throw new Error('All proxies failed');
     }
   }catch(e){
     allMarkets=demoData;
-    st.textContent='DEMO DATA (API BLOCKED)';
+    lastSource='demo';
+    st.textContent='DEMO DATA (all proxies failed)';
     document.getElementById('api-status').querySelector('.dot').className='dot offline';
     mc.style.display='inline-flex';
     document.getElementById('market-count-text').textContent=demoData.length+' DEMO';
   }
+  buildTicker();
   applyFilter();
 }
 
+// Returns {yes, no} in cents. Accepts internal shape (yes/no) or legacy shape (outcomePrices string).
 function parsePrices(p){
   if(!p)return[50,50];
+  if(typeof p==='object'&&p!==null){
+    if(typeof p.yes==='number'&&typeof p.no==='number')return[p.yes,p.no];
+  }
   if(typeof p==='string'){
     var m=p.match(/\[(\d+),(\d+)\]/);
     if(m)return[parseInt(m[1]),parseInt(m[2])];
@@ -308,8 +381,8 @@ var archSteps=[
       '<span class="tip-label">Kalshi API</span>'+
       '<div class="tier-block" data-tier="caveman">Big computer with all the bet info.</div>'+
       '<div class="tier-block" data-tier="child">Kalshi\'s website computer. It knows all the markets and prices.</div>'+
-      '<div class="tier-block" data-tier="teenager"><b>What it is:</b> Kalshi runs the prediction market. Their server holds all the data - every market, every price, every trade.<br><br><b>Think of it like:</b> A store\'s inventory database. It knows everything for sale and what it costs.<br><br><b>The endpoint:</b> <code>GET https://external-api.kalshi.com/v2/markets</code><br>No login needed - it\'s a public API!</div>'+
-      '<div class="tier-block" data-tier="indepth"><b>REST API</b> served by Kalshi Inc. (CFTC-regulated DCM). Base URL <code>https://external-api.kalshi.com/v2</code>. Endpoints are unauthenticated for read-only market data (markets, events, orderbook) but require an RSA-signed API key for any write operation (placing orders, viewing positions, withdrawing). Rate limit: ~100 req/min per IP for unauthenticated traffic. Responses are JSON, ISO timestamps, prices in cents (1-99 strings).</div>'
+      '<div class="tier-block" data-tier="teenager"><b>What it is:</b> Kalshi runs the prediction market. Their server holds all the data - every market, every price, every trade.<br><br><b>Think of it like:</b> A store\'s inventory database. It knows everything for sale and what it costs.<br><br><b>The endpoint:</b> <code>GET https://external-api.kalshi.com/trade-api/v2/markets</code><br>No login needed - it\'s a public API!</div>'+
+      '<div class="tier-block" data-tier="indepth"><b>REST API</b> served by Kalshi Inc. (CFTC-regulated DCM). Base URL <code>https://external-api.kalshi.com/trade-api/v2</code> (changed from the old <code>/v2</code> path in 2026). Endpoints are unauthenticated for read-only market data (markets, events, orderbook) but require an RSA-signed API key for any write operation (placing orders, viewing positions, withdrawing). Rate limit: ~100 req/min per IP for unauthenticated traffic. Responses are JSON, ISO timestamps, prices in dollars (e.g. <code>"0.6500"</code>) with 4-decimal precision, and volumes as <code>*_fp</code> strings (cents).</div>'
   },
   {
     label:'CORS Proxy',
@@ -320,7 +393,7 @@ var archSteps=[
       '<div class="tier-block" data-tier="caveman">Helper that calls for us.</div>'+
       '<div class="tier-block" data-tier="child">A friend who makes the phone call because our computer can\'t call the number directly.</div>'+
       '<div class="tier-block" data-tier="teenager"><b>What it is:</b> A middleman that sits between your browser and Kalshi\'s server.<br><br><b>Why we need it:</b> Browsers have a security rule called CORS. It blocks web pages from talking to servers on different websites. Kalshi hasn\'t opened their API to browsers, so we route through a proxy that adds the right permissions.<br><br><b>Think of it like:</b> A friend who makes a phone call for you because your phone can\'t call that number directly.</div>'+
-      '<div class="tier-block" data-tier="indepth">A CORS proxy is a thin server that adds the <code>Access-Control-Allow-Origin: *</code> header to responses. In production, you\'d host your own (Cloudflare Worker, Netlify Function, ~10 lines of code) so you control which origins can call it. Public proxies like corsproxy.io or allorigins.win exist but have no SLA and may log your traffic. The proxy is only needed for the browser-only deployment — a server-side bot calls Kalshi directly.</div>'
+      '<div class="tier-block" data-tier="indepth">A CORS proxy is a thin server that adds the <code>Access-Control-Allow-Origin: *</code> header to responses. This page tries two in order: <code>corsproxy.io</code> (URL-encoded target) and <code>proxy.cors.sh</code> (target as a query string). If both fail, the page falls back to built-in demo data. Public proxies have no SLA, may rate-limit, and may log your traffic — fine for a public explorer, not for production trading. The proxy is only needed for the browser-only deployment — a server-side bot calls Kalshi directly.</div>'
   },
   {
     label:'Data Parser',
@@ -331,7 +404,7 @@ var archSteps=[
       '<div class="tier-block" data-tier="caveman">Makes messy clean.</div>'+
       '<div class="tier-block" data-tier="child">Helper that picks the important stuff from a long messy answer.</div>'+
       '<div class="tier-block" data-tier="teenager"><b>What it is:</b> Code that takes the raw data from the API and cleans it up.<br><br><b>What it does:</b> The API returns a big JSON blob. The parser extracts just what we need: the ticker name, the YES/NO prices, the volume, and the status. It turns messy data into a clean list.<br><br><b>Think of it like:</b> A translator who takes a legal document and gives you the summary in plain English.</div>'+
-      '<div class="tier-block" data-tier="indepth">Stateless transform: <code>JSON.parse()</code> → array of market objects → <code>map()</code> to a flat row schema ({ticker, title, yes, no, volume, status, edge}). Runs in O(n) time, no I/O. The parser also coerces the <code>outcomePrices</code> field from a string like <code>"[22,78]"</code> to a two-element number array and computes the derived <code>edge</code> field at the same time.</div>'
+      '<div class="tier-block" data-tier="indepth">Stateless transform: <code>JSON.parse()</code> → array of market objects → <code>map(normalizeMarket)</code> to a flat row schema ({ticker, title, yes, no, volume, status, open_time, close_time}). Each call: <code>cents = round(parseFloat(yes_bid_dollars) * 100)</code>, then the mid of bid+ask is used for the displayed price. The parser also handles the new volume fields (<code>volume_24h_fp</code> preferred, fallback to <code>volume_fp</code>).</div>'
   },
   {
     label:'Analysis Engine',
@@ -423,8 +496,8 @@ var flowSteps=[
       '<span class="tip-label">Fetch Markets</span>'+
       '<div class="tier-block" data-tier="caveman">Page ask Kalshi for list.</div>'+
       '<div class="tier-block" data-tier="child">The page calls Kalshi\'s website and asks for all the markets people are betting on.</div>'+
-      '<div class="tier-block" data-tier="teenager"><b class="what-for">What happens:</b> Your code sends an HTTP GET request to Kalshi\'s server.<br><br><div class="api-call">GET https://external-api.kalshi.com/v2/markets?limit=50&amp;active=true</div><br><b class="what-for">What you get back:</b> A JSON list of markets, each with a ticker (like KXBTC), title (like "Bitcoin Above 100K"), outcomePrices (like [22,78]), and volume.</div>'+
-      '<div class="tier-block" data-tier="indepth">HTTP/1.1 GET to <code>https://external-api.kalshi.com/v2/markets?active=true&amp;limit=200&amp;cursor=&lt;optional&gt;</code>. Returns 200 with <code>{markets: [...], cursor: "..."}</code>. The cursor handles pagination — keep calling until <code>cursor</code> is null/empty. Response is gzipped by default; total payload for 200 markets is ~150KB. Latency from a US-based bot: 80-150ms. The CORS proxy adds ~50ms.</div>'
+      '<div class="tier-block" data-tier="teenager"><b class="what-for">What happens:</b> Your code sends an HTTP GET request to Kalshi\'s server.<br><br><div class="api-call">GET https://external-api.kalshi.com/trade-api/v2/markets?limit=50&amp;status=open</div><br><b class="what-for">What you get back:</b> A JSON list of markets, each with a ticker (like KXBTC), title (like "Bitcoin Above 100K"), yes_bid/ask_dollars (like "0.2200" / "0.2300"), and volume.</div>'+
+      '<div class="tier-block" data-tier="indepth">HTTP/1.1 GET to <code>https://external-api.kalshi.com/trade-api/v2/markets?status=open&amp;limit=200&amp;cursor=&lt;optional&gt;</code>. Returns 200 with <code>{markets: [...], cursor: "..."}</code>. The cursor handles pagination — keep calling until <code>cursor</code> is null/empty. Response is gzipped by default; total payload for 200 markets is ~250KB. Latency from a US-based bot: 80-150ms. The CORS proxy adds ~100-300ms. Prices are returned in dollars (<code>"0.6500"</code> = 65¢), volume as <code>*_fp</code> strings.</div>'
   },
   {
     label:'2. Parse Response',
@@ -435,7 +508,7 @@ var flowSteps=[
       '<div class="tier-block" data-tier="caveman">Pull out numbers.</div>'+
       '<div class="tier-block" data-tier="child">The page looks at all the messy info and picks the parts it needs.</div>'+
       '<div class="tier-block" data-tier="teenager"><b class="what-for">What happens:</b> The raw response is a big JSON blob. We loop through each market and pull out the fields we care about.<br><br><div class="api-call">// Each market looks like this:\n{\n  "ticker": "KXBTC",\n  "title": "Bitcoin Above 100K",\n  "outcomePrices": "[22,78]",\n  "volume": 23000000,\n  "status": "open"\n}</div><br><b class="what-for">What we extract:</b> Ticker name, YES price (22), NO price (78), volume (23M), and whether it\'s open for trading.</div>'+
-      '<div class="tier-block" data-tier="indepth">Pure function: <code>markets.map(raw =&gt; ({ticker: raw.ticker, title: raw.title, yes: parseInt(raw.outcomePrices[1..5]), no: parseInt(raw.outcomePrices[7..11]), volume: raw.volume, status: raw.status, edge: Math.abs(yes - no)}))</code>. Note: <code>outcomePrices</code> comes as a string-encoded array, so you need to slice and parse — a common foot-gun. The whole map runs in &lt;5ms for 200 markets.</div>'
+      '<div class="tier-block" data-tier="indepth">Pure function: <code>markets.map(raw =&gt; normalizeMarket(raw))</code>. <code>normalizeMarket</code> computes the mid of <code>yes_bid_dollars</code> + <code>yes_ask_dollars</code> (in cents), with fallbacks to <code>yes_bid</code> alone, then <code>last_price_dollars</code>. NO side is derived as <code>100 − yes</code> if not directly available. Volume uses <code>volume_24h_fp</code> when non-zero, else <code>volume_fp</code>. Runs in &lt;10ms for 200 markets.</div>'
   },
   {
     label:'3. Calculate Edge',
@@ -517,7 +590,13 @@ function drawFlowChart(){
 // ===== TICKER BAR =====
 function buildTicker(){
   var track=document.getElementById('ticker-track');
-  var items=demoData.map(function(m){return '<span class="ticker-item"><span class="label">'+m.ticker+'</span> <span class="val">'+parsePrices(m.outcomePrices)[0]+' cents</span></span>';});
+  if(!track)return;
+  // Use allMarkets if populated, else demoData
+  var src=(allMarkets&&allMarkets.length>0)?allMarkets:demoData;
+  var items=src.slice(0,12).map(function(m){
+    var p=parsePrices(m)[0];
+    return '<span class="ticker-item"><span class="label">'+m.ticker+'</span> <span class="val">'+p+' cents</span></span>';
+  });
   var text=items.join('  &#9670;  ');
   track.innerHTML=text+'  &#9670;  '+text;
 }
