@@ -158,6 +158,55 @@ tr.clickable{cursor:pointer}
 /* FOOTER */
 .footer{text-align:center;padding:2rem 0;color:var(--dim);font-size:0.7rem;letter-spacing:2px;border-top:1px solid rgba(0,240,255,0.1);margin-top:2rem}
 
+/* TIER SWITCHER - bottom slider */
+.tier-switcher{position:fixed;bottom:0;left:0;right:0;z-index:10000;background:linear-gradient(180deg,rgba(10,10,15,0.85),rgba(10,10,15,0.98));backdrop-filter:blur(20px);border-top:1px solid rgba(0,240,255,0.3);padding:0.7rem 1rem;box-shadow:0 -4px 20px rgba(0,0,0,0.4)}
+.tier-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.tier-label{color:var(--cyan);font-size:0.7rem;letter-spacing:2px;text-shadow:var(--glow);white-space:nowrap}
+.tier-slider-wrap{flex:1;display:flex;align-items:center;gap:0.8rem;min-width:280px}
+.tier-slider{flex:1;-webkit-appearance:none;appearance:none;height:6px;background:linear-gradient(90deg,var(--cyan),var(--magenta),var(--yellow));border-radius:3px;outline:none;cursor:pointer}
+.tier-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;background:var(--cyan);border:2px solid #000;border-radius:50%;cursor:pointer;box-shadow:0 0 12px var(--cyan),0 0 0 4px rgba(0,240,255,0.2);transition:all 0.2s}
+.tier-slider::-webkit-slider-thumb:hover{transform:scale(1.15);box-shadow:0 0 20px var(--cyan),0 0 0 6px rgba(0,240,255,0.3)}
+.tier-slider::-moz-range-thumb{width:22px;height:22px;background:var(--cyan);border:2px solid #000;border-radius:50%;cursor:pointer;box-shadow:0 0 12px var(--cyan)}
+.tier-tier-name{color:var(--yellow);font-size:0.85rem;font-weight:bold;min-width:100px;text-align:right;letter-spacing:1px;text-shadow:0 0 8px rgba(255,230,0,0.5)}
+.tier-tick-row{display:flex;justify-content:space-between;width:100%;font-size:0.55rem;color:var(--dim);letter-spacing:1px;padding:0 8px;margin-top:2px}
+
+/* TIER VISIBILITY - one tier visible at a time via body[data-tier] */
+.tier-block{display:none}
+body[data-tier="caveman"] .tier-block[data-tier="caveman"],
+body[data-tier="child"] .tier-block[data-tier="child"],
+body[data-tier="teenager"] .tier-block[data-tier="teenager"],
+body[data-tier="indepth"] .tier-block[data-tier="indepth"]{display:block}
+
+/* When a tier-block is a <span> (used inside tooltips/arch-expand/flow-expand which are inline),
+   force block layout so it stacks vertically with margins and borders. */
+span.tier-block{display:block}
+
+/* Inside tooltips and arch/flow expands: stack tiers vertically */
+.tip-text, .arch-expand, .flow-expand{position:relative}
+.tip-text .tier-block + .tier-block, .arch-expand .tier-block + .tier-block, .flow-expand .tier-block + .tier-block{margin-top:0.6rem;padding-top:0.6rem;border-top:1px dashed rgba(0,240,255,0.15)}
+
+/* Add a tiny tier badge in the corner of each explainer so users know they're seeing the right level */
+.tier-badge{display:inline-block;font-size:0.55rem;letter-spacing:1px;padding:2px 6px;border-radius:4px;margin-left:8px;vertical-align:middle;text-transform:uppercase;font-weight:bold}
+body[data-tier="caveman"] .tier-badge{background:rgba(0,240,255,0.2);color:var(--cyan);border:1px solid rgba(0,240,255,0.4)}
+body[data-tier="child"] .tier-badge{background:rgba(0,255,136,0.2);color:var(--green);border:1px solid rgba(0,255,136,0.4)}
+body[data-tier="teenager"] .tier-badge{background:rgba(255,230,0,0.2);color:var(--yellow);border:1px solid rgba(255,230,0,0.4)}
+body[data-tier="indepth"] .tier-badge{background:rgba(255,0,170,0.2);color:var(--magenta);border:1px solid rgba(255,0,170,0.4)}
+
+/* HUB section */
+.hub-scenario{background:var(--surface2);border:1px solid rgba(0,240,255,0.2);border-radius:12px;padding:1.2rem;margin-bottom:1rem;cursor:pointer;transition:all 0.3s}
+.hub-scenario:hover{border-color:rgba(0,240,255,0.5);box-shadow:var(--glow);transform:translateY(-2px)}
+.hub-scenario .hub-title{color:var(--cyan);font-size:0.95rem;font-weight:bold;letter-spacing:1px;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.6rem}
+.hub-scenario .hub-meta{color:var(--dim);font-size:0.7rem;letter-spacing:1px;margin-bottom:0.6rem}
+.hub-scenario .hub-summary{color:var(--text);font-size:0.8rem;line-height:1.6}
+.hub-scenario .hub-expand{display:none;margin-top:0.8rem;padding-top:0.8rem;border-top:1px solid rgba(0,240,255,0.2);font-size:0.8rem;line-height:1.7;color:var(--dim)}
+.hub-scenario .hub-expand.show{display:block}
+.hub-scenario .hub-expand strong{color:var(--cyan)}
+.hub-scenario .hub-expand h4{color:var(--magenta);font-size:0.85rem;margin:0.6rem 0 0.3rem;letter-spacing:1px}
+.hub-scenario .hub-expand code{color:var(--green);background:rgba(0,0,0,0.3);padding:0.1rem 0.3rem;border-radius:3px;font-size:0.75rem}
+.hub-scenario .hub-expand ul{margin:0.3rem 0 0.3rem 1.2rem}
+.hub-scenario .hub-expand li{margin-bottom:0.3rem}
+.hub-scenario .hub-footprint{display:inline-block;background:rgba(0,240,255,0.1);border:1px solid rgba(0,240,255,0.3);border-radius:4px;padding:2px 8px;font-size:0.65rem;color:var(--cyan);margin-right:0.4rem;letter-spacing:0.5px}
+
 /* MOBILE */
 @media(max-width:768px){
   .content-wrapper{padding:0 1rem}
@@ -169,10 +218,15 @@ tr.clickable{cursor:pointer}
   .flow-step{min-width:100%;max-width:100%}
   .tooltip .tip-text{max-width:220px;font-size:0.7rem;padding:0.6rem 0.8rem}
   .arch-box{max-width:100%;font-size:0.78rem;padding:0.8rem 1rem}
+  .tier-inner{gap:0.5rem}
+  .tier-tier-name{min-width:70px;font-size:0.75rem}
+  .tier-tick-row{display:none}
+  .tier-label{font-size:0.6rem}
+  body{padding-bottom:90px}
 }
 </style>
 </head>
-<body>
+<body data-tier="teenager">
 <canvas id="webgl-bg"></canvas>
 <div class="scanlines"></div>
 <div class="bg-overlay"></div>
@@ -187,6 +241,7 @@ tr.clickable{cursor:pointer}
       <a data-section="architecture">ARCHITECTURE</a>
       <a data-section="flowchart">API FLOW</a>
       <a data-section="bot">BOT DESIGN</a>
+      <a data-section="hub">HERMES HUB</a>
     </div>
   </div>
 </nav>
@@ -203,14 +258,26 @@ tr.clickable{cursor:pointer}
     <span id="status-text">API STATUS: CONNECTING...</span>
     <span class="tooltip" style="margin-left:4px">
       <span style="font-size:0.7rem;color:var(--dim)">?</span>
-      <span class="tip-text"><span class="tip-label">API Status</span>Shows whether live market data is being fetched from Kalshi's public API. Falls back to demo data if blocked by CORS.</span></span>
+      <span class="tip-text">
+        <span class="tip-label">API Status</span>
+        <span class="tier-block" data-tier="caveman">Is the page talking to the big computer?</span>
+        <span class="tier-block" data-tier="child">Is the page connected to Kalshi's website right now?</span>
+        <span class="tier-block" data-tier="teenager">Shows whether live market data is being fetched from Kalshi's public API. Falls back to demo data if blocked by CORS.</span>
+        <span class="tier-block" data-tier="indepth">Reflects the result of a single GET to <code>/v2/markets?limit=1</code>. Green = HTTP 200; yellow = CORS-blocked (the proxy handled it); red = network error or rate limit (HTTP 429).</span>
+      </span></span>
     </span>
   </div>
   <div class="status-badge" id="market-count" style="display:none">
     <span id="market-count-text">0 MARKETS</span>
     <span class="tooltip" style="margin-left:4px">
       <span style="font-size:0.7rem;color:var(--dim)">?</span>
-      <span class="tip-text"><span class="tip-label">Market Count</span>Number of active markets currently loaded. Higher count means more opportunities to find edges.</span></span>
+      <span class="tip-text">
+        <span class="tip-label">Market Count</span>
+        <span class="tier-block" data-tier="caveman">How many bets you can pick from.</span>
+        <span class="tier-block" data-tier="child">How many Kalshi markets are loaded on this page right now.</span>
+        <span class="tier-block" data-tier="teenager">Number of active markets currently loaded. Higher count means more opportunities to find edges.</span>
+        <span class="tier-block" data-tier="indepth">The count is the length of the <code>markets</code> array after the parser stage, <em>before</em> any user-applied filters. Useful to verify the API returned the full page (default <code>limit=200</code>).</span>
+      </span></span>
     </span>
   </div>
 </div>
@@ -224,17 +291,34 @@ tr.clickable{cursor:pointer}
   <div class="tab" data-section="architecture">ARCHITECTURE</div>
   <div class="tab" data-section="flowchart">API FLOW</div>
   <div class="tab" data-section="bot">BOT DESIGN</div>
+  <div class="tab" data-section="hub">HERMES HUB</div>
 </div>
 
 <!-- ===== SCANNER ===== -->
 <section id="scanner" class="section">
-  <div class="explainer">
-    <h3>&#128161; What is Kalshi?</h3>
-    <p>Kalshi is a <strong>prediction market</strong> where you trade on the outcome of real-world events. Each market has a YES and NO price in cents (1-99). If you buy YES at 65&#162; and the event happens, you get $1.00 per contract. If not, you lose your 65&#162;.</p>
-    <div class="example">
-      <strong style="color:var(--cyan)">Example:</strong> "Dow Above 45000" &#8212; YES price is 12&#162;<br>
+  <div class="explainer" data-explainer="what-is-kalshi">
+    <h3>💡 What is Kalshi? <span class="tier-badge" id="badge-what-is-kalshi">TEENAGER</span></h3>
+
+    <div class="tier-block" data-tier="caveman">
+      <p>People bet coins on if stuff happens. Sometimes yes, sometimes no. Win coins if right.</p>
+    </div>
+
+    <div class="tier-block" data-tier="child">
+      <p>Kalshi is a website where grown-ups bet on whether things will happen. Like "will it rain tomorrow?" You pick YES or NO. If you're right, you win money. If you're wrong, you lose what you bet.</p>
+    </div>
+
+    <div class="tier-block" data-tier="teenager">
+      <p>Kalshi is a <strong>prediction market</strong> where you trade on the outcome of real-world events. Each market has a YES and NO price in cents (1-99). If you buy YES at 65¢ and the event happens, you get $1.00 per contract. If not, you lose your 65¢.</p>
+    </div>
+
+    <div class="tier-block" data-tier="indepth">
+      <p>Kalshi is a CFTC-regulated Designated Contract Market (DCM) and the first federally licensed exchange for event contracts in the US. Each contract is a binary option: pays $1.00 if the specified event resolves YES, $0.00 if NO. Prices are quoted in cents (1-99) representing the market's implied probability of YES — a 65¢ YES implies a 65% chance the market-makers collectively assign. Spreads, depth, and order books are visible via the API at <code>/v2/markets/{ticker}/orderbook</code>.</p>
+    </div>
+
+    <div class="example" data-tier-example="what-is-kalshi">
+      <strong style="color:var(--cyan)">Example:</strong> "Dow Above 45000" — YES price is 12¢<br>
       This means the market thinks there's a <span class="highlight">12% chance</span> the Dow closes above 45000.<br>
-      Buy 100 YES contracts at 12&#162; each = $12 invested. If Dow &gt; 45000, you get $100. Profit = $88.
+      Buy 100 YES contracts at 12¢ each = $12 invested. If Dow &gt; 45000, you get $100. Profit = $88.
     </div>
   </div>
 
@@ -243,7 +327,13 @@ tr.clickable{cursor:pointer}
       &#128274; LIVE MARKET SCANNER
       <span class="tooltip">
         <span style="font-size:0.7rem;color:var(--dim);border-bottom:1px dotted var(--dim)">what is this?</span>
-        <span class="tip-text"><span class="tip-label">Market Scanner</span>Scans Kalshi's public API for active markets. Each market is a real-world event you can trade on. Prices show the market's implied probability (0-100%). Click any market to see full details.</span></span>
+        <span class="tip-text">
+          <span class="tip-label">Market Scanner</span>
+          <span class="tier-block" data-tier="caveman">List of all the bets. Click one.</span>
+          <span class="tier-block" data-tier="child">The list of markets Kalshi lets you bet on. Click one to see more info.</span>
+          <span class="tier-block" data-tier="teenager">Scans Kalshi's public API for active markets. Each market is a real-world event you can trade on. Prices show the market's implied probability (0-100%). Click any market to see full details.</span>
+          <span class="tier-block" data-tier="indepth">Calls <code>GET /v2/markets?active=true&amp;limit=200</code>, paginates via <code>cursor</code> if needed, and renders the union. Each row is clickable to fetch <code>GET /v2/markets/{ticker}</code> for full orderbook and metadata.</span>
+        </span></span>
       </span>
     </h2>
     <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center">
@@ -263,7 +353,13 @@ tr.clickable{cursor:pointer}
         &#128202; TOP 10 BY EDGE
         <span class="tooltip">
           <span style="font-size:0.7rem;color:var(--dim);border-bottom:1px dotted var(--dim)">what is edge?</span>
-          <span class="tip-text"><span class="tip-label">Edge</span>The difference between YES and NO prices. A 90&#162; YES / 10&#162; NO market has an edge of 80&#162; &#8212; meaning the market is very confident. Small edges (like 5&#162;) mean the outcome is uncertain. High edge = high confidence, but lower profit potential per trade.</span></span>
+          <span class="tip-text">
+            <span class="tip-label">Edge</span>
+            <span class="tier-block" data-tier="caveman">How much sure people are.</span>
+            <span class="tier-block" data-tier="child">How confident the market is. Big gap = very sure. Small gap = could go either way.</span>
+            <span class="tier-block" data-tier="teenager">The difference between YES and NO prices. A 90¢ YES / 10¢ NO market has an edge of 80¢ — meaning the market is very confident. Small edges (like 5¢) mean the outcome is uncertain. High edge = high confidence, but lower profit potential per trade.</span>
+            <span class="tier-block" data-tier="indepth">Edge = <code>|YES_price − NO_price|</code> in cents. A 50/50 market has 0¢ edge; a near-certain market approaches 100¢. Edge is inversely related to expected profit per contract — high-edge markets pay out less on a win because the YES price is already high. The most profitable trades are usually in the 60-80¢ edge band.</span>
+          </span>
         </span>
       </h2>
       <table id="top10-table">
@@ -277,7 +373,13 @@ tr.clickable{cursor:pointer}
           &#127919; MARKET DETAIL
           <span class="tooltip">
             <span style="font-size:0.7rem;color:var(--dim);border-bottom:1px dotted var(--dim)">how to read</span>
-            <span class="tip-text"><span class="tip-label">Market Detail</span>Click any market in the scanner list or top 10 table to see full details here. The YES price is what you pay to buy a contract. If the event resolves YES, you get $1.00 per contract. The NO price works the same way for the opposite outcome.</span></span>
+            <span class="tip-text">
+              <span class="tip-label">Market Detail</span>
+              <span class="tier-block" data-tier="caveman">More info about one bet.</span>
+              <span class="tier-block" data-tier="child">When you click a market, this box shows you the prices and the question.</span>
+              <span class="tier-block" data-tier="teenager">Click any market in the scanner list or top 10 table to see full details here. The YES price is what you pay to buy a contract. If the event resolves YES, you get $1.00 per contract. The NO price works the same way for the opposite outcome.</span>
+              <span class="tier-block" data-tier="indepth">Renders the full market payload: title, rules, expiry, volume, 24h price change, and the live orderbook. The orderbook shows YES bids/asks in 1¢ increments — spread and depth tell you how liquid the market is.</span>
+            </span></span>
           </span>
         </h2>
         <p style="color:var(--dim);font-size:0.8rem">Click a market to see details</p>
@@ -288,13 +390,29 @@ tr.clickable{cursor:pointer}
 
 <!-- ===== CALCULATOR ===== -->
 <section id="calculator" class="section" style="display:none">
-  <div class="explainer">
-    <h3>&#128161; Probability Calculator</h3>
-    <p>This tool shows you exactly what you'd earn at different buy prices and investment amounts. Kalshi contracts pay out $1.00 if you're right, $0 if you're wrong.</p>
-    <div class="example">
+  <div class="explainer" data-explainer="calculator">
+    <h3>💡 Probability Calculator <span class="tier-badge" id="badge-calculator">TEENAGER</span></h3>
+
+    <div class="tier-block" data-tier="caveman">
+      <p>Type number. Get money number back. Big number better.</p>
+    </div>
+
+    <div class="tier-block" data-tier="child">
+      <p>Put in two numbers: how much the ticket costs and how much money you want to spend. The calculator tells you how much you win if you get it right.</p>
+    </div>
+
+    <div class="tier-block" data-tier="teenager">
+      <p>This tool shows you exactly what you'd earn at different buy prices and investment amounts. Kalshi contracts pay out $1.00 if you're right, $0 if you're wrong.</p>
+    </div>
+
+    <div class="tier-block" data-tier="indepth">
+      <p>Two-input payout calculator using <code>payout = floor(investment / price_cents) × 100</code> cents. The ROI formula is <code>(100 − price) / price</code>, expressed as a percent. Monthly/annual projections assume a fixed number of winning trades at a constant stake — these do <em>not</em> account for variance, fees (currently 1.5% on profits), or the fact that no edge persists indefinitely. Treat them as upper bounds for the geometric mean of independent identical bets.</p>
+    </div>
+
+    <div class="example" data-tier-example="calculator">
       <strong style="color:var(--cyan)">How it works:</strong><br>
-      Buy price: 65&#162; (means 65% chance) &#8212; Invest $100<br>
-      You get 153 contracts at 65&#162; each. If you win: 153 &times; $1.00 = $153 payout. Profit = $53.
+      Buy price: 65¢ (means 65% chance) — Invest $100<br>
+      You get 153 contracts at 65¢ each. If you win: 153 × $1.00 = $153 payout. Profit = $53.
     </div>
   </div>
 
@@ -303,7 +421,13 @@ tr.clickable{cursor:pointer}
       &#128183; PROBABILITY CALCULATOR
       <span class="tooltip">
         <span style="font-size:0.7rem;color:var(--dim);border-bottom:1px dotted var(--dim)">how to use</span>
-        <span class="tip-text"><span class="tip-label">Calculator</span>Enter the market's YES price as a whole number (1-99 cents) and how much you want to invest. Shows your potential profit, ROI, and monthly/annual projections.</span></span>
+        <span class="tip-text">
+          <span class="tip-label">Calculator</span>
+          <span class="tier-block" data-tier="caveman">Money math box.</span>
+          <span class="tier-block" data-tier="child">Put in a price and how much to spend. It shows how much you win.</span>
+          <span class="tier-block" data-tier="teenager">Enter the market's YES price as a whole number (1-99 cents) and how much you want to invest. Shows your potential profit, ROI, and monthly/annual projections.</span>
+          <span class="tier-block" data-tier="indepth">Two input fields: <code>price</code> (1-99 integer, no decimals — Kalshi prices are always whole cents) and <code>investment</code> (USD, decimal allowed). Outputs are payout, profit, ROI %, and projected returns at 4 trades/month and 48 trades/year (assumes every trade wins — for a realistic view, multiply by your model's win rate).</span>
+        </span></span>
       </span>
     </h2>
     <div class="grid grid-2">
@@ -311,14 +435,26 @@ tr.clickable{cursor:pointer}
         <label>BUY PRICE (whole cents, e.g. 65)
           <span class="tooltip" style="margin-left:4px">
             <span style="font-size:0.65rem;color:var(--dim)">?</span>
-            <span class="tip-text"><span class="tip-label">Buy Price</span>Enter a whole number (1-99). This is the market's price in cents. 65 means 65% implied probability. No decimals &#8212; 65&#162; not 0.65.</span></span>
+            <span class="tip-text">
+              <span class="tip-label">Buy Price</span>
+              <div class="tier-block" data-tier="caveman">Number of cents.</div>
+              <div class="tier-block" data-tier="child">How many cents each bet costs. Lower number = cheaper, but you need to win more often.</div>
+              <div class="tier-block" data-tier="teenager">Enter a whole number (1-99). This is the market's price in cents. 65 means 65% implied probability. No decimals — 65¢ not 0.65.</div>
+              <div class="tier-block" data-tier="indepth">Kalshi's public API returns prices as strings like <code>"65"</code> (cents, 1-99 inclusive). The calculator normalizes to an integer and rejects 0, &gt;99, and any non-numeric input. The 1¢ increment is enforced by the exchange's matching engine — there is no fractional-cent pricing.</div>
+            </span>
           </span>
         </label>
         <input type="number" id="calc-buy" placeholder="e.g. 65" min="1" max="99" step="1" oninput="this.value=Math.round(this.value)||''" style="width:100%">
         <label style="margin-top:0.8rem">INVESTMENT ($)
           <span class="tooltip" style="margin-left:4px">
             <span style="font-size:0.65rem;color:var(--dim)">?</span>
-            <span class="tip-text"><span class="tip-label">Investment</span>Total dollars you want to spend. $100 at 65&#162; = 153 contracts ($100 / $0.65).</span></span>
+            <span class="tip-text">
+              <span class="tip-label">Investment</span>
+              <div class="tier-block" data-tier="caveman">Dollars you use.</div>
+              <div class="tier-block" data-tier="child">How many dollars you want to bet on this market.</div>
+              <div class="tier-block" data-tier="teenager">Total dollars you want to spend. $100 at 65¢ = 153 contracts ($100 / $0.65).</div>
+              <div class="tier-block" data-tier="indepth">USD amount, decimal-allowed. Internally converted to cents (<code>× 100</code>), divided by price to get contract count, then floored (you can't buy a fraction of a contract). Minimum order on Kalshi is typically $1.</div>
+            </span>
           </span>
         </label>
         <input type="number" id="calc-invest" placeholder="e.g. 100" min="1" style="width:100%">
@@ -334,15 +470,31 @@ tr.clickable{cursor:pointer}
 
 <!-- ===== EARNINGS ===== -->
 <section id="earnings" class="section" style="display:none">
-  <div class="explainer">
-    <h3>&#128161; Earnings: What Could I Make?</h3>
-    <p>Imagine you find a market where the YES price is 70&#162;. That means you pay 70&#162; per contract. If you're right, your contract pays $1.00. If you're wrong, you get nothing.</p>
-    <div class="example">
+  <div class="explainer" data-explainer="earnings">
+    <h3>💡 Earnings: What Could I Make? <span class="tier-badge" id="badge-earnings">TEENAGER</span></h3>
+
+    <div class="tier-block" data-tier="caveman">
+      <p>Chart go up when right. Chart go down when wrong. Make money if right more.</p>
+    </div>
+
+    <div class="tier-block" data-tier="child">
+      <p>This picture shows how much money you could win or lose at different prices. Cheap tickets win less money. Expensive tickets win more money, but you lose more often.</p>
+    </div>
+
+    <div class="tier-block" data-tier="teenager">
+      <p>Imagine you find a market where the YES price is 70¢. That means you pay 70¢ per contract. If you're right, your contract pays $1.00. If you're wrong, you get nothing.</p>
+    </div>
+
+    <div class="tier-block" data-tier="indepth">
+      <p>The earnings function is a piecewise linear payoff: <code>profit_per_contract = (100 − price) cents</code> on a win, <code>−price cents</code> on a loss. Expected value per contract is <code>p × (100−p) − (1−p) × p = 0</code> under the null hypothesis that the market is correctly priced. To produce positive EV you need <code>p̂ &gt; p</code> — i.e. your estimated probability must exceed the implied price. The breakeven win-rate at any price <code>p</code> is <code>p / 100</code> (so 70¢ requires ≥70% accuracy to break even before fees).</p>
+    </div>
+
+    <div class="example" data-tier-example="earnings">
       <strong style="color:var(--cyan)">Think of it like this:</strong><br>
-      &#8226; Price = what you pay for a ticket<br>
-      &#8226; $1.00 = what the ticket pays if you win<br>
-      &#8226; Profit = $1.00 minus what you paid<br>
-      So at 70&#162;, every winning ticket makes 30&#162; profit. But you lose your 70&#162; on every losing ticket.
+      • Price = what you pay for a ticket<br>
+      • $1.00 = what the ticket pays if you win<br>
+      • Profit = $1.00 minus what you paid<br>
+      So at 70¢, every winning ticket makes 30¢ profit. But you lose your 70¢ on every losing ticket.
     </div>
   </div>
 
@@ -367,9 +519,24 @@ tr.clickable{cursor:pointer}
 
 <!-- ===== ARCHITECTURE ===== -->
 <section id="architecture" class="section" style="display:none">
-  <div class="explainer">
-    <h3>&#128161; How This Tool Works (Click Each Box!)</h3>
-    <p>This page connects to Kalshi's API, grabs market data, crunches the numbers, and displays them. Click any box in the pipeline below to learn what it does &#8212; explained simply.</p>
+  <div class="explainer" data-explainer="architecture">
+    <h3>💡 How This Tool Works (Click Each Box!) <span class="tier-badge" id="badge-architecture">TEENAGER</span></h3>
+
+    <div class="tier-block" data-tier="caveman">
+      <p>Boxes. One box talks to next box. Stuff comes out at end.</p>
+    </div>
+
+    <div class="tier-block" data-tier="child">
+      <p>This page is like a row of helpers. The first helper asks Kalshi for all the markets. The next helper makes the messy answer nice and clean. The next helper picks out the good ones. The last helper draws the tables and charts for you to see.</p>
+    </div>
+
+    <div class="tier-block" data-tier="teenager">
+      <p>This page connects to Kalshi's API, grabs market data, crunches the numbers, and displays them. Click any box in the pipeline below to learn what it does — explained simply.</p>
+    </div>
+
+    <div class="tier-block" data-tier="indepth">
+      <p>The architecture is a five-stage data pipeline. Stage 1 hits Kalshi's public REST API (CORS forces a proxy in the browser-only deployment; a server-side bot can call directly). Stage 2 normalizes the response: tickers, prices, volume, and status. Stage 3 computes derived metrics — edge, mid-price, volume-weighted rank, and time-since-open. Stage 4 sorts and filters per the user's query. Stage 5 renders the views: market list, top-10 table, detail panel, and chart. Each stage is stateless and pure (modulo caching), so the same pipeline can be re-driven by a cron loop, a Discord slash command, or a Telegram bot with no rewrites.</p>
+    </div>
   </div>
 
   <div class="card">
@@ -400,9 +567,24 @@ tr.clickable{cursor:pointer}
 
 <!-- ===== API FLOW ===== -->
 <section id="flowchart" class="section" style="display:none">
-  <div class="explainer">
-    <h3>&#128161; Anatomy of an API Call (Click Each Step!)</h3>
-    <p>When you click SCAN, the page asks Kalshi's server for market data. Here's exactly what happens at each step, with the actual code.</p>
+  <div class="explainer" data-explainer="flowchart">
+    <h3>💡 Anatomy of an API Call (Click Each Step!) <span class="tier-badge" id="badge-flowchart">TEENAGER</span></h3>
+
+    <div class="tier-block" data-tier="caveman">
+      <p>You push button. Page ask far away box. Box send back stuff. Page show stuff.</p>
+    </div>
+
+    <div class="tier-block" data-tier="child">
+      <p>When you click SCAN, the page asks Kalshi's computer for a list of all the markets. Kalshi sends back a long list. The page sorts it and shows you the most interesting ones first.</p>
+    </div>
+
+    <div class="tier-block" data-tier="teenager">
+      <p>When you click SCAN, the page asks Kalshi's server for market data. Here's exactly what happens at each step, with the actual code.</p>
+    </div>
+
+    <div class="tier-block" data-tier="indepth">
+      <p>Five-step REST round-trip: (1) <code>fetch()</code> with a query string to <code>/v2/markets</code>; (2) JSON parse into an array of market objects; (3) transform each object into a flat row of derived fields; (4) stable sort by a composite key (edge desc, volume desc); (5) DOM append into the result list. Network failures degrade to a cached or demo dataset; rate-limit responses (HTTP 429) trigger exponential backoff in the server-side variant.</p>
+    </div>
   </div>
 
   <div class="card">
@@ -426,9 +608,24 @@ tr.clickable{cursor:pointer}
 
 <!-- ===== BOT DESIGN ===== -->
 <section id="bot" class="section" style="display:none">
-  <div class="explainer">
-    <h3>&#128161; Discord Bot: What Could This Become?</h3>
-    <p>This web page could power a Discord bot that scans markets 24/7 and sends you alerts when opportunities appear. Here's the plan.</p>
+  <div class="explainer" data-explainer="bot">
+    <h3>💡 Discord Bot: What Could This Become? <span class="tier-badge" id="badge-bot">TEENAGER</span></h3>
+
+    <div class="tier-block" data-tier="caveman">
+      <p>Robot friend. Watch all day. Tell you good things to bet on.</p>
+    </div>
+
+    <div class="tier-block" data-tier="child">
+      <p>You could turn this page into a robot friend that lives on the internet. The robot watches Kalshi all day, every day. When it spots a good deal, it sends you a message in Discord.</p>
+    </div>
+
+    <div class="tier-block" data-tier="teenager">
+      <p>This web page could power a Discord bot that scans markets 24/7 and sends you alerts when opportunities appear. Here's the plan.</p>
+    </div>
+
+    <div class="tier-block" data-tier="indepth">
+      <p>The bot would be a small Python (or Node) service running on a VPS, a Raspberry Pi, or a free-tier Oracle Cloud instance. It polls the public <code>/v2/markets</code> endpoint on a cron schedule, runs the same edge/volume/recency filters used in this page, and dispatches alerts through Discord webhooks (zero auth needed for sending) or a discord.py bot (richer UX). Trade execution requires authenticated endpoints and a separate API key — see the <a href="https://docs.kalshi.com" target="_blank" rel="noopener">Kalshi API docs</a>.</p>
+    </div>
   </div>
 
   <div class="card">
@@ -458,11 +655,289 @@ tr.clickable{cursor:pointer}
   </div>
 </section>
 
+<!-- ===== HERMES HUB ===== -->
+<section id="hub" class="section" style="display:none">
+  <div class="explainer" data-explainer="hub">
+    <h3>🧠 Hermes Hub: How a 1-Man AI Agent Uses This <span class="tier-badge" id="badge-hub">TEENAGER</span></h3>
+
+    <div class="tier-block" data-tier="caveman">
+      <p>Tiny box in Don's house. Smart box watch Kalshi. Smart box tell Don when win.</p>
+    </div>
+
+    <div class="tier-block" data-tier="child">
+      <p>Hermes is a computer program that lives on a small computer in Don's house. The computer is the size of a sandwich. Hermes wakes up every few minutes, looks at Kalshi, and if it finds something good, it sends Don a message.</p>
+    </div>
+
+    <div class="tier-block" data-tier="teenager">
+      <p>This page is the <em>front-end</em> of a one-man AI trading research setup. The full system runs on a Raspberry Pi 4 with 2GB of RAM, hosted on Don's home network, and powered by Hermes Agent. It scans Kalshi 24/7, crunches probabilities, and alerts the user (the "master") via Discord or Telegram. Click each scenario below to see how it's wired together.</p>
+    </div>
+
+    <div class="tier-block" data-tier="indepth">
+      <p>The deployment is a single Raspberry Pi 4 (2GB) running Raspberry Pi OS Lite. The stack: a <code>systemd</code>-supervised Python service polls Kalshi's public <code>/v2/markets</code> every 5 minutes; the analysis layer (the same code that drives this page) computes edge, volume, and recency scores; alerts are dispatched via a Discord webhook (push, no inbound port) or a long-poll Telegram bot. Memory footprint stays under 250MB because we never load the full market list into Python — we stream and filter as we go. The Pi 4's 4-core ARM Cortex-A72 is overkill for the workload; what matters is the always-on, low-wattage (~$3/yr) footprint. Click each scenario below to see the architecture, footprint, and trade-offs.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🎯 The 1-Man Pi 4 + Hermes Use Case</h2>
+    <p style="color:var(--dim);font-size:0.8rem;margin-bottom:1rem">The "master" is a single person. The "slave" is one Pi 4. The "API" is Kalshi. Click each card to expand.</p>
+
+    <div class="hub-scenario" data-hub-idx="0">
+      <div class="hub-title">📡 Scenario A: Read-Only Research Assistant</div>
+      <div class="hub-meta">
+        <span class="hub-footprint">RAM: ~120 MB</span>
+        <span class="hub-footprint">CPU: ~3%</span>
+        <span class="hub-footprint">Disk: ~50 MB</span>
+        <span class="hub-footprint">No trading</span>
+      </div>
+      <div class="hub-summary">Hermes scans Kalshi, finds interesting markets, summarizes them, and sends a digest to Discord every hour. You read, you decide, you trade manually in the Kalshi app.</div>
+      <div class="hub-expand">
+        <h4>What it does</h4>
+        <ul>
+          <li>Polls <code>/v2/markets</code> every 15 minutes</li>
+          <li>Filters for top-10 by edge or volume</li>
+          <li>Sends a Discord message: "🔥 KXBTC just dropped to 18¢ — was 22¢ an hour ago"</li>
+          <li>You log into Kalshi and click buy if you agree</li>
+        </ul>
+        <h4>Why this works on a Pi 4 2GB</h4>
+        <ul>
+          <li>Zero authenticated endpoints — no API keys, no rate-limit drama</li>
+          <li>Polling is cheap; the bottleneck is Discord's HTTPS POST</li>
+          <li>Memory headroom lets you run other services on the same Pi</li>
+        </ul>
+        <h4>Hermes skill needed</h4>
+        <ul>
+          <li>Python <code>requests</code> + <code>discord-webhook</code></li>
+          <li>Cron entry: <code>*/15 * * * * python3 scan.py</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hub-scenario" data-hub-idx="1">
+      <div class="hub-title">🤖 Scenario B: Advise-and-Confirm Trader</div>
+      <div class="hub-meta">
+        <span class="hub-footprint">RAM: ~180 MB</span>
+        <span class="hub-footprint">CPU: ~5%</span>
+        <span class="hub-footprint">Disk: ~80 MB</span>
+        <span class="hub-footprint">Kalshi API key</span>
+      </div>
+      <div class="hub-summary">Hermes finds a trade, drafts the order, and DMs you "Should I buy 50 YES @ 18¢ on KXBTC? Reply YES/NO." You reply, Hermes executes via the authenticated API.</div>
+      <div class="hub-expand">
+        <h4>What it does</h4>
+        <ul>
+          <li>Scans continuously, watches for your pre-set criteria (e.g. "any market where YES dropped &gt;3¢ in 1 hour and volume &gt; $1M")</li>
+          <li>When triggered, posts a Discord/Telegram message with the proposed trade and a one-click approve button</li>
+          <li>You click approve → Hermes calls <code>POST /v2/portfolio/orders</code> with your API key</li>
+        </ul>
+        <h4>Why this works on a Pi 4 2GB</h4>
+        <ul>
+          <li>Auth tokens are tiny (RSA private key is ~1.7 KB)</li>
+          <li>The Pi handles TLS handshake fine; the CPU is idle 95% of the time</li>
+          <li>Disk is mostly logs (rotate weekly)</li>
+        </ul>
+        <h4>Hermes skill needed</h4>
+        <ul>
+          <li>Kalshi authenticated <code>POST /portfolio/orders</code> with RSA-PSS signature</li>
+          <li>Discord/Telegram interactive button handler</li>
+          <li>Trade journal written to SQLite on the Pi</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hub-scenario" data-hub-idx="2">
+      <div class="hub-title">⚡ Scenario C: Full Autonomous Mode</div>
+      <div class="hub-meta">
+        <span class="hub-footprint">RAM: ~250 MB</span>
+        <span class="hub-footprint">CPU: ~8%</span>
+        <span class="hub-footprint">Disk: ~120 MB</span>
+        <span class="hub-footprint">High risk</span>
+      </div>
+      <div class="hub-summary">Hermes trades on its own within rules you set: "max $50/trade, max 4 trades/day, stop at -$200 daily." You review the journal each evening.</div>
+      <div class="hub-expand">
+        <h4>What it does</h4>
+        <ul>
+          <li>Same as B, but no human-in-the-loop</li>
+          <li>Risk limits enforced in code (kill-switch file on the Pi — touch <code>/home/donzzz/STOP_TRADING</code> and Hermes halts)</li>
+          <li>Posts a daily P&amp;L summary to Discord at 9pm</li>
+        </ul>
+        <h4>Why this works on a Pi 4 2GB</h4>
+        <ul>
+          <li>The Pi is just a scheduler; all the "smart" logic is in Python loops with sleeps</li>
+          <li>You can SSH in and <code>systemctl stop kalshi-bot</code> in 3 seconds</li>
+          <li>Total power draw: ~3W = essentially free to run 24/7</li>
+        </ul>
+        <h4>Hermes skill needed</h4>
+        <ul>
+          <li>Everything in B, plus a state machine with explicit risk guards</li>
+          <li>SQLite journal with row-level locking (safe for single-process)</li>
+          <li>Daily email summary via <code>himalaya</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1.5rem">
+    <h2>🌐 Branching Out: Other Ways To Use This</h2>
+    <p style="color:var(--dim);font-size:0.8rem;margin-bottom:1rem">The same Kalshi pipeline can power more than a Pi 4. Click to expand each variant.</p>
+
+    <div class="hub-scenario" data-hub-idx="10">
+      <div class="hub-title">☁️ Cloud: Free-Tier Oracle / Fly.io</div>
+      <div class="hub-meta">
+        <span class="hub-footprint">Cost: $0/mo</span>
+        <span class="hub-footprint">RAM: 256 MB</span>
+        <span class="hub-footprint">Always-on</span>
+      </div>
+      <div class="hub-summary">Run the same Hermes script on a free-tier cloud VM. No Pi hardware to maintain, no home network outage risk.</div>
+      <div class="hub-expand">
+        <h4>Why consider it</h4>
+        <ul>
+          <li>No power outage, no SD card failure, no home internet hiccup</li>
+          <li>Public IP — easier to expose a webhook for the Discord bot</li>
+          <li>Free tier is enough for a poll-every-15-minutes bot</li>
+        </ul>
+        <h4>Hermes variant</h4>
+        <ul>
+          <li>Same Python code, same SQLite, same env vars</li>
+          <li>Deploy via <code>fly launch</code> or Oracle's "Always Free" Ampere A1 (4 cores, 24GB RAM — absurd overkill)</li>
+          <li>Add <code>pgrep -f kalshi-bot</code> as a healthcheck</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hub-scenario" data-hub-idx="11">
+      <div class="hub-title">📱 Mobile: Telegram + Tailscale Funnel</div>
+      <div class="hub-meta">
+        <span class="hub-footprint">Cost: $0</span>
+        <span class="hub-footprint">Setup: 20 min</span>
+        <span class="hub-footprint">Phone-only</span>
+      </div>
+      <div class="hub-summary">Run Hermes on your phone via Termux. Get a public HTTPS endpoint via Tailscale Funnel. Trade from anywhere with just a phone.</div>
+      <div class="hub-expand">
+        <h4>Why consider it</h4>
+        <ul>
+          <li>If your Pi is down, your phone is probably up</li>
+          <li>Termux is a full Linux userland on Android — Python, cron, SQLite all work</li>
+          <li>Tailscale Funnel gives you <code>https://your-pi.tail-net.ts.net</code> for free</li>
+        </ul>
+        <h4>Hermes variant</h4>
+        <ul>
+          <li>Same Python code, copy-pasted into <code>~/hermes</code> on the phone</li>
+          <li>Run <code>termux-wake-lock</code> to prevent Android from killing it</li>
+          <li>Use <code>termux-notification</code> instead of Discord for alerts (no API key needed)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hub-scenario" data-hub-idx="12">
+      <div class="hub-title">🧪 Cron + Local LLM: Smart Filtering</div>
+      <div class="hub-meta">
+        <span class="hub-footprint">RAM: ~1.5 GB</span>
+        <span class="hub-footprint">CPU: heavy</span>
+        <span class="hub-footprint">LLM-powered</span>
+      </div>
+      <div class="hub-summary">Pipe the top-10 markets through a local LLM (Llama 3 8B, Phi-3) and have it write a plain-English summary: "KXBTC is probably oversold because…"</div>
+      <div class="hub-expand">
+        <h4>Why consider it</h4>
+        <ul>
+          <li>Raw numbers don't tell you <em>why</em> a market moved</li>
+          <li>A local LLM can read the market title and infer context (e.g. "KXBTC just hit ATH → YES on 'BTC &gt; 100K by EOY' is now more likely")</li>
+          <li>Keeps everything on-device, no OpenAI key needed</li>
+        </ul>
+        <h4>Hermes variant</h4>
+        <ul>
+          <li>Use Hermes itself as the LLM layer — feed it the top-10 JSON, ask for a summary</li>
+          <li>Or run Ollama with <code>llama3.2:3b</code> if you want zero cloud</li>
+          <li>Cache summaries to SQLite so you don't re-LLM the same data</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hub-scenario" data-hub-idx="13">
+      <div class="hub-title">👥 Group Mode: Shared Discord Server</div>
+      <div class="hub-meta">
+        <span class="hub-footprint">Cost: $0</span>
+        <span class="hub-footprint">Multi-user</span>
+        <span class="hub-footprint">Social</span>
+      </div>
+      <div class="hub-summary">Don and 2-3 friends share one Hermes instance. Each gets a Discord channel with their own risk profile. Hermes tags trades with the right person.</div>
+      <div class="hub-expand">
+        <h4>Why consider it</h4>
+        <ul>
+          <li>Split the Pi cost across friends (it's $35 one-time anyway)</li>
+          <li>Shared signal: "Hey, KXBTC just dropped, anyone else seeing this?"</li>
+          <li>Each person's risk profile is a different config file</li>
+        </ul>
+        <h4>Hermes variant</h4>
+        <ul>
+          <li>Add a <code>users</code> table: <code>(discord_id, max_trade_size, max_daily_loss, topics_of_interest)</code></li>
+          <li>Loop through users, generate one alert per matching user</li>
+          <li>Webhook per user keeps notifications private</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hub-scenario" data-hub-idx="14">
+      <div class="hub-title">📊 Portfolio Tracker: Paper Mode</div>
+      <div class="hub-meta">
+        <span class="hub-footprint">Cost: $0</span>
+        <span class="hub-footprint">No real money</span>
+        <span class="hub-footprint">Backtest</span>
+      </div>
+      <div class="hub-summary">Don't trade real money. Just log what Hermes <em>would</em> have done. See if the strategy is profitable over weeks/months before risking a cent.</div>
+      <div class="hub-expand">
+        <h4>Why consider it</h4>
+        <ul>
+          <li>Zero risk — just SQLite writes</li>
+          <li>Validates the strategy before you trust it with real money</li>
+          <li>You can A/B test two different filters and see which one would have won</li>
+        </ul>
+        <h4>Hermes variant</h4>
+        <ul>
+          <li>Replace the order <code>POST</code> with a <code>INSERT INTO paper_trades</code></li>
+          <li>Resolve trades manually when the market closes (Kalshi publishes settlement data)</li>
+          <li>Generate a weekly P&amp;L chart in this web UI (the GitHub Pages site could read the SQLite via a daily JSON dump)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1.5rem">
+    <h2>⚙️ Quick-Start: From Zero to First Scan in 30 Minutes</h2>
+    <ol style="color:var(--text);line-height:1.8;font-size:0.8rem;padding-left:1.2rem">
+      <li>SSH into your Pi: <code>ssh donzzz@raspberrypi.local</code></li>
+      <li>Install deps: <code>sudo apt install python3-pip sqlite3 -y</code></li>
+      <li>Create the bot: <code>mkdir ~/kalshi-bot && cd ~/kalshi-bot</code></li>
+      <li>Write <code>scan.py</code> — a 30-line Python script using <code>requests</code> to hit <code>https://external-api.kalshi.com/v2/markets?active=true</code></li>
+      <li>Test it: <code>python3 scan.py</code> — should print JSON</li>
+      <li>Hook Discord: create a webhook in your server, paste URL into <code>~/.hermes/.env</code> as <code>DISCORD_WEBHOOK_URL=...</code></li>
+      <li>Schedule it: <code>crontab -e</code> → <code>*/15 * * * * /usr/bin/python3 /home/donzzz/kalshi-bot/scan.py &gt;&gt; /home/donzzz/kalshi-bot/bot.log 2&gt;&amp;1</code></li>
+      <li>Watch your Discord — first alert in 15 minutes 🚀</li>
+    </ol>
+  </div>
+</section>
+
 </div>
 <div class="footer">
   <p>KALSHI PROBABILITY EXPLORER // Data: Kalshi Public API</p>
 </div>
 
-<script src="app.js?v=2"></script>
+<div class="tier-switcher" id="tier-switcher">
+  <div class="tier-inner">
+    <span class="tier-label">⚡ EXPLAINER LEVEL</span>
+    <div class="tier-slider-wrap">
+      <input type="range" min="0" max="3" value="2" step="1" class="tier-slider" id="tier-slider" aria-label="Explainer depth level">
+    </div>
+    <span class="tier-tier-name" id="tier-name">TEENAGER</span>
+  </div>
+  <div class="tier-inner" style="margin-top:0.4rem">
+    <div class="tier-tick-row" style="flex:1">
+      <span>CAVEMAN</span>
+      <span>CHILD</span>
+      <span>TEENAGER</span>
+      <span>IN-DEPTH</span>
+    </div>
+  </div>
+</div>
+
+<script src="app.js?v=3"></script>
 </body>
 </html>

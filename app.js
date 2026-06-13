@@ -304,37 +304,67 @@ var archSteps=[
     label:'Kalshi API',
     color:'var(--cyan)',
     icon:'&#128225;',
-    explain:'<b>What it is:</b> Kalshi runs the prediction market. Their server holds all the data - every market, every price, every trade.<br><br><b>Think of it like:</b> A store\'s inventory database. It knows everything for sale and what it costs.<br><br><b>The endpoint:</b> <code>GET https://external-api.kalshi.com/v2/markets</code><br>No login needed - it\'s a public API!'
+    explain:
+      '<span class="tip-label">Kalshi API</span>'+
+      '<div class="tier-block" data-tier="caveman">Big computer with all the bet info.</div>'+
+      '<div class="tier-block" data-tier="child">Kalshi\'s website computer. It knows all the markets and prices.</div>'+
+      '<div class="tier-block" data-tier="teenager"><b>What it is:</b> Kalshi runs the prediction market. Their server holds all the data - every market, every price, every trade.<br><br><b>Think of it like:</b> A store\'s inventory database. It knows everything for sale and what it costs.<br><br><b>The endpoint:</b> <code>GET https://external-api.kalshi.com/v2/markets</code><br>No login needed - it\'s a public API!</div>'+
+      '<div class="tier-block" data-tier="indepth"><b>REST API</b> served by Kalshi Inc. (CFTC-regulated DCM). Base URL <code>https://external-api.kalshi.com/v2</code>. Endpoints are unauthenticated for read-only market data (markets, events, orderbook) but require an RSA-signed API key for any write operation (placing orders, viewing positions, withdrawing). Rate limit: ~100 req/min per IP for unauthenticated traffic. Responses are JSON, ISO timestamps, prices in cents (1-99 strings).</div>'
   },
   {
     label:'CORS Proxy',
     color:'var(--purple)',
     icon:'&#128260;',
-    explain:'<b>What it is:</b> A middleman that sits between your browser and Kalshi\'s server.<br><br><b>Why we need it:</b> Browsers have a security rule called CORS. It blocks web pages from talking to servers on different websites. Kalshi hasn\'t opened their API to browsers, so we route through a proxy that adds the right permissions.<br><br><b>Think of it like:</b> A friend who makes a phone call for you because your phone can\'t call that number directly.'
+    explain:
+      '<span class="tip-label">CORS Proxy</span>'+
+      '<div class="tier-block" data-tier="caveman">Helper that calls for us.</div>'+
+      '<div class="tier-block" data-tier="child">A friend who makes the phone call because our computer can\'t call the number directly.</div>'+
+      '<div class="tier-block" data-tier="teenager"><b>What it is:</b> A middleman that sits between your browser and Kalshi\'s server.<br><br><b>Why we need it:</b> Browsers have a security rule called CORS. It blocks web pages from talking to servers on different websites. Kalshi hasn\'t opened their API to browsers, so we route through a proxy that adds the right permissions.<br><br><b>Think of it like:</b> A friend who makes a phone call for you because your phone can\'t call that number directly.</div>'+
+      '<div class="tier-block" data-tier="indepth">A CORS proxy is a thin server that adds the <code>Access-Control-Allow-Origin: *</code> header to responses. In production, you\'d host your own (Cloudflare Worker, Netlify Function, ~10 lines of code) so you control which origins can call it. Public proxies like corsproxy.io or allorigins.win exist but have no SLA and may log your traffic. The proxy is only needed for the browser-only deployment — a server-side bot calls Kalshi directly.</div>'
   },
   {
     label:'Data Parser',
     color:'var(--green)',
     icon:'&#128202;',
-    explain:'<b>What it is:</b> Code that takes the raw data from the API and cleans it up.<br><br><b>What it does:</b> The API returns a big JSON blob. The parser extracts just what we need: the ticker name, the YES/NO prices, the volume, and the status. It turns messy data into a clean list.<br><br><b>Think of it like:</b> A translator who takes a legal document and gives you the summary in plain English.'
+    explain:
+      '<span class="tip-label">Data Parser</span>'+
+      '<div class="tier-block" data-tier="caveman">Makes messy clean.</div>'+
+      '<div class="tier-block" data-tier="child">Helper that picks the important stuff from a long messy answer.</div>'+
+      '<div class="tier-block" data-tier="teenager"><b>What it is:</b> Code that takes the raw data from the API and cleans it up.<br><br><b>What it does:</b> The API returns a big JSON blob. The parser extracts just what we need: the ticker name, the YES/NO prices, the volume, and the status. It turns messy data into a clean list.<br><br><b>Think of it like:</b> A translator who takes a legal document and gives you the summary in plain English.</div>'+
+      '<div class="tier-block" data-tier="indepth">Stateless transform: <code>JSON.parse()</code> → array of market objects → <code>map()</code> to a flat row schema ({ticker, title, yes, no, volume, status, edge}). Runs in O(n) time, no I/O. The parser also coerces the <code>outcomePrices</code> field from a string like <code>"[22,78]"</code> to a two-element number array and computes the derived <code>edge</code> field at the same time.</div>'
   },
   {
     label:'Analysis Engine',
     color:'var(--yellow)',
     icon:'&#129504;',
-    explain:'<b>What it is:</b> The brain of the operation. This code looks at all the markets and figures out which ones are interesting.<br><br><b>What it calculates:</b><br>&bull; <b>Edge</b> = the gap between YES and NO prices<br>&bull; <b>Volume score</b> = how active the market is<br>&bull; <b>Opportunity rank</b> = which markets to watch<br><br><b>Think of it like:</b> A scout at a sports game, watching all the players and picking out the best prospects.'
+    explain:
+      '<span class="tip-label">Analysis Engine</span>'+
+      '<div class="tier-block" data-tier="caveman">Brain. Picks winners.</div>'+
+      '<div class="tier-block" data-tier="child">Smart helper that finds the most interesting markets.</div>'+
+      '<div class="tier-block" data-tier="teenager"><b>What it is:</b> The brain of the operation. This code looks at all the markets and figures out which ones are interesting.<br><br><b>What it calculates:</b><br>&bull; <b>Edge</b> = the gap between YES and NO prices<br>&bull; <b>Volume score</b> = how active the market is<br>&bull; <b>Opportunity rank</b> = which markets to watch<br><br><b>Think of it like:</b> A scout at a sports game, watching all the players and picking out the best prospects.</div>'+
+      '<div class="tier-block" data-tier="indepth">Pure functions over the parsed market list. Computes: (1) <code>edge = |yes - no|</code>; (2) <code>volume_score = log10(volume) / 7</code> (saturates at $10M); (3) <code>recency_score = e^(-Δt/24h)</code> (decays over a day); (4) <code>composite = 0.5*edge + 0.3*volume_score + 0.2*recency_score</code>. The composite score ranks markets in the Top-10 view. No ML — just weighted heuristics that you can tune.</div>'
   },
   {
     label:'UI Renderer',
     color:'var(--cyan)',
     icon:'&#128421;',
-    explain:'<b>What it is:</b> The code that draws everything you see on screen - the tables, charts, buttons, and colors.<br><br><b>How it works:</b> JavaScript reads the analyzed data and creates HTML elements on the fly. When you click SCAN, it builds the market list. When you click a market, it builds the detail panel.<br><br><b>Think of it like:</b> A movie set designer. The data is the script, and the renderer builds what you actually see.'
+    explain:
+      '<span class="tip-label">UI Renderer</span>'+
+      '<div class="tier-block" data-tier="caveman">Draws pretty boxes.</div>'+
+      '<div class="tier-block" data-tier="child">Helper that builds all the buttons, tables, and pictures on the page.</div>'+
+      '<div class="tier-block" data-tier="teenager"><b>What it is:</b> The code that draws everything you see on screen - the tables, charts, buttons, and colors.<br><br><b>How it works:</b> JavaScript reads the analyzed data and creates HTML elements on the fly. When you click SCAN, it builds the market list. When you click a market, it builds the detail panel.<br><br><b>Think of it like:</b> A movie set designer. The data is the script, and the renderer builds what you actually see.</div>'+
+      '<div class="tier-block" data-tier="indepth">Vanilla DOM rendering: <code>document.createElement</code> + <code>el.innerHTML = ...</code> for tables and lists; Chart.js (canvas) for the earnings curve; a small custom WebGL background (three.js) for the particle effect. No framework — the entire bundle (excluding CDN libs) is ~25KB. The renderer is the only stateful component: it holds the current filter, sort, and selection in module-level vars.</div>'
   },
   {
     label:'Discord Bot',
     color:'var(--magenta)',
     icon:'&#129302;',
-    explain:'<b>What it is:</b> A planned feature that would run on a server 24/7, scanning markets and sending alerts to Discord.<br><b>Why a bot?</b> A server doesn\'t have CORS restrictions, so it can talk directly to Kalshi\'s real API. No proxy needed!<br><br><b>What it would do:</b><br>&bull; Scan markets every few minutes<br>&bull; Find high-edge opportunities<br>&bull; Send you a Discord message when something looks good<br><br><b>Think of it like:</b> A stock ticker that watches the market all day and texts you when something interesting happens.'
+    explain:
+      '<span class="tip-label">Discord Bot</span>'+
+      '<div class="tier-block" data-tier="caveman">Helper that tells you stuff in chat.</div>'+
+      '<div class="tier-block" data-tier="child">A robot friend in Discord that tells you when something good happens on Kalshi.</div>'+
+      '<div class="tier-block" data-tier="teenager"><b>What it is:</b> A planned feature that would run on a server 24/7, scanning markets and sending alerts to Discord.<br><b>Why a bot?</b> A server doesn\'t have CORS restrictions, so it can talk directly to Kalshi\'s real API. No proxy needed!<br><br><b>What it would do:</b><br>&bull; Scan markets every few minutes<br>&bull; Find high-edge opportunities<br>&bull; Send you a Discord message when something looks good<br><br><b>Think of it like:</b> A stock ticker that watches the market all day and texts you when something interesting happens.</div>'+
+      '<div class="tier-block" data-tier="indepth">A Python service (or Node) polling <code>/v2/markets</code> on a schedule, running the same analysis engine, and dispatching via a Discord webhook (zero-auth, just POST JSON) for read-only alerts or via a discord.py bot (with the bot token) for interactive commands and buttons. Deployment targets: Raspberry Pi 4 (2GB is fine, ~150MB RSS), Oracle Cloud Always-Free ARM, Fly.io free tier, or a $5/mo Hetzner VPS. See the <a href="#hub" onclick="switchTab(\'hub\');return false;">HERMES HUB</a> tab for the full architecture breakdown.</div>'
   }
 ];
 
@@ -389,31 +419,56 @@ var flowSteps=[
     label:'1. Fetch Markets',
     desc:'Ask Kalshi for a list of active markets',
     color:'var(--cyan)',
-    detail:'<b class="what-for">What happens:</b> Your code sends an HTTP GET request to Kalshi\'s server.<br><br><div class="api-call">GET https://external-api.kalshi.com/v2/markets?limit=50&active=true</div><br><b class="what-for">What you get back:</b> A JSON list of markets, each with a ticker (like KXBTC), title (like "Bitcoin Above 100K"), outcomePrices (like [22,78]), and volume.'
+    detail:
+      '<span class="tip-label">Fetch Markets</span>'+
+      '<div class="tier-block" data-tier="caveman">Page ask Kalshi for list.</div>'+
+      '<div class="tier-block" data-tier="child">The page calls Kalshi\'s website and asks for all the markets people are betting on.</div>'+
+      '<div class="tier-block" data-tier="teenager"><b class="what-for">What happens:</b> Your code sends an HTTP GET request to Kalshi\'s server.<br><br><div class="api-call">GET https://external-api.kalshi.com/v2/markets?limit=50&amp;active=true</div><br><b class="what-for">What you get back:</b> A JSON list of markets, each with a ticker (like KXBTC), title (like "Bitcoin Above 100K"), outcomePrices (like [22,78]), and volume.</div>'+
+      '<div class="tier-block" data-tier="indepth">HTTP/1.1 GET to <code>https://external-api.kalshi.com/v2/markets?active=true&amp;limit=200&amp;cursor=&lt;optional&gt;</code>. Returns 200 with <code>{markets: [...], cursor: "..."}</code>. The cursor handles pagination — keep calling until <code>cursor</code> is null/empty. Response is gzipped by default; total payload for 200 markets is ~150KB. Latency from a US-based bot: 80-150ms. The CORS proxy adds ~50ms.</div>'
   },
   {
     label:'2. Parse Response',
     desc:'Extract prices, volume, and status from the raw data',
     color:'var(--green)',
-    detail:'<b class="what-for">What happens:</b> The raw response is a big JSON blob. We loop through each market and pull out the fields we care about.<br><br><div class="api-call">// Each market looks like this:\n{\n  "ticker": "KXBTC",\n  "title": "Bitcoin Above 100K",\n  "outcomePrices": "[22,78]",\n  "volume": 23000000,\n  "status": "open"\n}</div><br><b class="what-for">What we extract:</b> Ticker name, YES price (22), NO price (78), volume (23M), and whether it\'s open for trading.'
+    detail:
+      '<span class="tip-label">Parse Response</span>'+
+      '<div class="tier-block" data-tier="caveman">Pull out numbers.</div>'+
+      '<div class="tier-block" data-tier="child">The page looks at all the messy info and picks the parts it needs.</div>'+
+      '<div class="tier-block" data-tier="teenager"><b class="what-for">What happens:</b> The raw response is a big JSON blob. We loop through each market and pull out the fields we care about.<br><br><div class="api-call">// Each market looks like this:\n{\n  "ticker": "KXBTC",\n  "title": "Bitcoin Above 100K",\n  "outcomePrices": "[22,78]",\n  "volume": 23000000,\n  "status": "open"\n}</div><br><b class="what-for">What we extract:</b> Ticker name, YES price (22), NO price (78), volume (23M), and whether it\'s open for trading.</div>'+
+      '<div class="tier-block" data-tier="indepth">Pure function: <code>markets.map(raw =&gt; ({ticker: raw.ticker, title: raw.title, yes: parseInt(raw.outcomePrices[1..5]), no: parseInt(raw.outcomePrices[7..11]), volume: raw.volume, status: raw.status, edge: Math.abs(yes - no)}))</code>. Note: <code>outcomePrices</code> comes as a string-encoded array, so you need to slice and parse — a common foot-gun. The whole map runs in &lt;5ms for 200 markets.</div>'
   },
   {
     label:'3. Calculate Edge',
     desc:'Find the gap between YES and NO prices',
     color:'var(--yellow)',
-    detail:'<b class="what-for">What happens:</b> For each market, we subtract the smaller price from the bigger price. This gap is called the "edge."<br><br><div class="api-call">// Example: KXBTC\nYES = 22 cents, NO = 78 cents\nEdge = |22 - 78| = 56 cents</div><br><b class="what-for">What it means:</b> A big edge (like 80) means the market is very confident about the outcome. A small edge (like 4) means it could go either way.'
+    detail:
+      '<span class="tip-label">Calculate Edge</span>'+
+      '<div class="tier-block" data-tier="caveman">Big gap = sure thing.</div>'+
+      '<div class="tier-block" data-tier="child">For each market, we see how far apart the YES and NO prices are. The bigger the gap, the more sure everyone is.</div>'+
+      '<div class="tier-block" data-tier="teenager"><b class="what-for">What happens:</b> For each market, we subtract the smaller price from the bigger price. This gap is called the "edge."<br><br><div class="api-call">// Example: KXBTC\nYES = 22 cents, NO = 78 cents\nEdge = |22 - 78| = 56 cents</div><br><b class="what-for">What it means:</b> A big edge (like 80) means the market is very confident about the outcome. A small edge (like 4) means it could go either way.</div>'+
+      '<div class="tier-block" data-tier="indepth">O(n) scan: <code>edge = Math.abs(market.yes - market.no)</code>. Note that the YES + NO prices are <em>not</em> guaranteed to sum to 100 — Kalshi prices are independent mid-points, so YES=22, NO=78 sums to 100, but YES=30, NO=68 (sum=98) is also valid and indicates a 2¢ spread. The edge computation is therefore a measure of "distance from 50¢", not "distance between the two prices".</div>'
   },
   {
     label:'4. Sort & Filter',
     desc:'Put the most interesting markets at the top',
     color:'var(--purple)',
-    detail:'<b class="what-for">What happens:</b> We sort all markets by edge (biggest first) and filter out any that don\'t match your search.<br><br><div class="api-call">// Sort by edge, descending\nmarkets.sort((a,b) => {\n  return b.edge - a.edge;\n});</div><br><b class="what-for">Why this matters:</b> You don\'t want to scroll through 100 markets. Sorting puts the most interesting ones at the top.'
+    detail:
+      '<span class="tip-label">Sort &amp; Filter</span>'+
+      '<div class="tier-block" data-tier="caveman">Pick best. Show first.</div>'+
+      '<div class="tier-block" data-tier="child">We put the most interesting markets at the top of the list, and hide the boring ones.</div>'+
+      '<div class="tier-block" data-tier="teenager"><b class="what-for">What happens:</b> We sort all markets by edge (biggest first) and filter out any that don\'t match your search.<br><br><div class="api-call">// Sort by edge, descending\nmarkets.sort((a,b) =&gt; {\n  return b.edge - a.edge;\n});</div><br><b class="what-for">Why this matters:</b> You don\'t want to scroll through 100 markets. Sorting puts the most interesting ones at the top.</div>'+
+      '<div class="tier-block" data-tier="indepth">Stable sort: <code>Array.prototype.sort</code> with a composite key — primary sort on <code>composite_score</code> (the analysis engine\'s output), secondary on <code>volume</code>, tertiary on <code>ticker</code> (alphabetical for ties). Search uses <code>String.includes</code> on the lowercased title; the filter is O(n) so the total cost is dominated by the sort (O(n log n)). For 200 markets this is sub-millisecond on any modern CPU.</div>'
   },
   {
     label:'5. Render UI',
     desc:'Build the table, charts, and detail views on screen',
     color:'var(--cyan)',
-    detail:'<b class="what-for">What happens:</b> JavaScript creates HTML elements for each market and inserts them into the page. The top 10 go into the table. All markets go into the scanner list. Charts get drawn with Chart.js.<br><br><b class="what-for">What you see:</b> The finished page with all the market data laid out in tables, cards, and charts. Every time you click SCAN, this whole process runs again with fresh data.'
+    detail:
+      '<span class="tip-label">Render UI</span>'+
+      '<div class="tier-block" data-tier="caveman">Make page pretty.</div>'+
+      '<div class="tier-block" data-tier="child">The page puts everything it found into tables and pictures you can look at.</div>'+
+      '<div class="tier-block" data-tier="teenager"><b class="what-for">What happens:</b> JavaScript creates HTML elements for each market and inserts them into the page. The top 10 go into the table. All markets go into the scanner list. Charts get drawn with Chart.js.<br><br><b class="what-for">What you see:</b> The finished page with all the market data laid out in tables, cards, and charts. Every time you click SCAN, this whole process runs again with fresh data.</div>'+
+      '<div class="tier-block" data-tier="indepth">Three render targets: (1) the top-10 table built with <code>Array.map</code> + template literal → <code>tbody.innerHTML</code>; (2) the full market list as clickable <code>.market-item</code> divs with a delegated click handler for detail-panel population; (3) the earnings chart via Chart.js <code>new Chart(ctx, config)</code> with a linear y-axis. The whole render is synchronous and finishes in &lt;50ms. The WebGL background runs in a separate requestAnimationFrame loop and is purely cosmetic.</div>'
   }
 ];
 
@@ -508,3 +563,61 @@ function buildTicker(){
 // ===== INIT =====
 buildTicker();
 setTimeout(function(){scanMarkets();},500);
+
+// ===== TIER SWITCHER (Caveman / Child / Teenager / In-Depth) =====
+(function(){
+  var TIERS=['caveman','child','teenager','indepth'];
+  var NAMES=['CAVEMAN','CHILD','TEENAGER','IN-DEPTH'];
+  var LS_KEY='kalshi_explainer_tier';
+  var slider=document.getElementById('tier-slider');
+  var nameEl=document.getElementById('tier-name');
+  if(!slider||!nameEl)return;
+
+  function setTier(idx){
+    var tier=TIERS[idx]||'teenager';
+    document.body.setAttribute('data-tier',tier);
+    nameEl.textContent=NAMES[idx]||'TEENAGER';
+    // Update all explainer badges
+    document.querySelectorAll('.tier-badge').forEach(function(b){
+      b.textContent=NAMES[idx]||'TEENAGER';
+    });
+    try{localStorage.setItem(LS_KEY,String(idx));}catch(e){}
+  }
+
+  // Restore from localStorage
+  var saved=null;
+  try{saved=localStorage.getItem(LS_KEY);}catch(e){}
+  if(saved!==null&&saved!==''){
+    var idx=parseInt(saved,10);
+    if(!isNaN(idx)&&idx>=0&&idx<TIERS.length){
+      slider.value=String(idx);
+      setTier(idx);
+    }else{
+      setTier(2);
+    }
+  }else{
+    setTier(2);
+  }
+
+  slider.addEventListener('input',function(){
+    setTier(parseInt(this.value,10)||0);
+  });
+})();
+
+// ===== HUB SCENARIO EXPAND =====
+(function(){
+  document.querySelectorAll('.hub-scenario').forEach(function(card){
+    card.addEventListener('click',function(e){
+      // Don't toggle if clicking inside the expand (e.g. a code block) — actually we DO want it to close
+      var exp=this.querySelector('.hub-expand');
+      if(!exp)return;
+      if(exp.classList.contains('show')){
+        exp.classList.remove('show');
+      }else{
+        exp.classList.add('show');
+      }
+    });
+  });
+})();
+
+// (Tab/nav switching is handled by the existing switchTab() at line ~34. HUB is auto-picked up because data-section="hub" matches the pattern.)
