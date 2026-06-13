@@ -1,4 +1,8 @@
-// ===== THREE.JS BACKGROUND =====
+#!/usr/bin/env python3
+"""Write app.js without any tool mangling."""
+import json
+
+js = r"""// ===== THREE.JS BACKGROUND =====
 (function(){
   var c=document.getElementById('webgl-bg');
   if(!c)return;
@@ -508,3 +512,9 @@ function buildTicker(){
 // ===== INIT =====
 buildTicker();
 setTimeout(function(){scanMarkets();},500);
+"""
+
+with open('app.js', 'w') as f:
+    f.write(js)
+
+print(f"app.js written: {len(js)} chars")
