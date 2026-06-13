@@ -177,9 +177,12 @@ body[data-tier="child"] .tier-block[data-tier="child"],
 body[data-tier="teenager"] .tier-block[data-tier="teenager"],
 body[data-tier="indepth"] .tier-block[data-tier="indepth"]{display:block}
 
-/* When a tier-block is a <span> (used inside tooltips/arch-expand/flow-expand which are inline),
-   force block layout so it stacks vertically with margins and borders. */
-span.tier-block{display:block}
+/* Tier blocks inside tooltips/arch/flow expands need block layout (they're spans for inline context).
+   Each rule matches BOTH the body tier AND a specific tier-block, giving us gated visibility. */
+body[data-tier="caveman"] span.tier-block[data-tier="caveman"],
+body[data-tier="child"] span.tier-block[data-tier="child"],
+body[data-tier="teenager"] span.tier-block[data-tier="teenager"],
+body[data-tier="indepth"] span.tier-block[data-tier="indepth"]{display:block}
 
 /* Inside tooltips and arch/flow expands: stack tiers vertically */
 .tip-text, .arch-expand, .flow-expand{position:relative}
