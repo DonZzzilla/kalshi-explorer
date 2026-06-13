@@ -316,6 +316,45 @@ function buildTicker(){
   track.innerHTML=text+'  &#9670;  '+text;
 }
 
+
+// ===== TOOLTIP PORTAL =====
+(function(){
+  var activeTip=null;
+  function showTip(el){
+    hideTip();
+    var tip=el.querySelector('.tip-text');
+    if(!tip)return;
+    activeTip=el;
+    tip.classList.add('show');
+    var rect=el.getBoundingClientRect();
+    var tipW=280;
+    var left=rect.left+rect.width/2-tipW/2;
+    if(left<10)left=10;
+    if(left+tipW>innerWidth-10)left=innerWidth-tipW-10;
+    tip.style.left=left+'px';
+    tip.style.top=(rect.top-tip.offsetHeight-10)+'px';
+  }
+  function hideTip(){
+    if(activeTip){
+      var t=activeTip.querySelector('.tip-text');
+      if(t)t.classList.remove('show');
+      activeTip=null;
+    }
+  }
+  document.querySelectorAll('.tooltip').forEach(function(el){
+    el.addEventListener('mouseenter',function(){showTip(el);});
+    el.addEventListener('mouseleave',function(){hideTip();});
+    el.addEventListener('click',function(e){
+      e.preventDefault();
+      if(activeTip===el){hideTip();}else{showTip(el);}
+    });
+  });
+  document.addEventListener('click',function(e){
+    if(!e.target.closest('.tooltip'))hideTip();
+  });
+  document.addEventListener('scroll',function(){hideTip();});
+})();
+
 // ===== INIT =====
 buildTicker();
 setTimeout(function(){scanMarkets();},500);

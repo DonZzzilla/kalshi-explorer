@@ -50,7 +50,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,0.9
 .tab.active{background:linear-gradient(135deg,rgba(0,240,255,0.15),rgba(255,0,170,0.15));border-color:var(--cyan);color:var(--cyan)}
 
 /* CARDS */
-.card{background:var(--surface);border:1px solid rgba(0,240,255,0.1);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;transition:all 0.3s;position:relative;overflow:hidden}
+.card{background:var(--surface);border:1px solid rgba(0,240,255,0.1);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;transition:all 0.3s;position:relative;overflow:visible}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--magenta));opacity:0.6}
 .card:hover{border-color:rgba(0,240,255,0.3);box-shadow:var(--glow)}
 .card h2{color:var(--cyan);font-size:1.05rem;margin-bottom:0.8rem;letter-spacing:2px;display:flex;align-items:center;gap:0.5rem}
@@ -71,11 +71,15 @@ input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 10px rgba(0,240
 .btn.active{background:linear-gradient(135deg,var(--cyan),var(--magenta));color:#000;border-color:var(--cyan)}
 .btn-sm{padding:0.35rem 0.7rem;font-size:0.7rem}
 
-/* TOOLTIP */
+/* TOOLTIP - portal-based to avoid overflow clipping */
 .tooltip{position:relative;display:inline-block;cursor:help;border-bottom:1px dotted var(--dim)}
-.tooltip .tip-text{visibility:hidden;opacity:0;position:absolute;z-index:200;bottom:125%;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid rgba(0,240,255,0.3);border-radius:8px;padding:0.8rem 1rem;font-size:0.75rem;color:var(--text);width:max-content;max-width:280px;transition:opacity 0.2s,visibility 0.2s;pointer-events:none;line-height:1.5;box-shadow:0 4px 20px rgba(0,0,0,0.5)}
-.tooltip:hover .tip-text{visibility:visible;opacity:1}
+.tooltip .tip-text{display:none;position:fixed;z-index:99999;background:var(--surface2);border:1px solid rgba(0,240,255,0.3);border-radius:8px;padding:0.8rem 1rem;font-size:0.75rem;color:var(--text);width:max-content;max-width:280px;pointer-events:none;line-height:1.5;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0;transition:opacity 0.15s}
+.tooltip .tip-text.show{display:block;opacity:1}
 .tip-label{color:var(--cyan);font-weight:bold;display:block;margin-bottom:0.3rem;font-size:0.8rem}
+/* Mobile: tap to show */
+@media(max-width:768px){
+  .tooltip .tip-text{max-width:220px;font-size:0.7rem;padding:0.6rem 0.8rem}
+}
 
 /* INFO BOX */
 .info-box{background:rgba(0,240,255,0.05);border:1px solid rgba(0,240,255,0.2);border-radius:8px;padding:1rem;margin:1rem 0;font-size:0.8rem;line-height:1.7}
@@ -83,7 +87,7 @@ input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 10px rgba(0,240
 .info-box .highlight{color:var(--yellow)}
 
 /* MARKET LIST */
-.market-list{max-height:400px;overflow-y:auto}
+.market-list{overflow:visible}
 .market-item{background:var(--surface2);border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:0.8rem;margin-bottom:0.5rem;cursor:pointer;transition:all 0.2s}
 .market-item:hover{border-color:rgba(0,240,255,0.3);background:rgba(0,240,255,0.03)}
 .market-item .m-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem}
