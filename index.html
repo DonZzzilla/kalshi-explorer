@@ -8,14 +8,16 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a2e;--cyan:#00f0ff;--magenta:#ff00aa;--yellow:#ffe600;--green:#00ff88;--red:#ff3366;--text:#e0e0e0;--dim:#6a6a8a;--glow:0 0 20px rgba(0,240,255,0.3);--font:'Courier New',monospace}
+:root{--bg:#0d0d14;--surface:#16161f;--surface2:#1e1e28;--cyan:#00f0ff;--magenta:#ff00aa;--yellow:#ffe600;--green:#00ff88;--red:#ff3366;--text:#f0f0f5;--dim:#9a9ab0;--glow:0 0 20px rgba(0,240,255,0.3);--font:'Courier New',monospace}
 html{scroll-behavior:smooth}
-body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;position:relative}
+.content-wrapper{position:relative;z-index:10}
 #webgl-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
-.scanlines{position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;pointer-events:none;opacity:0.03;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,255,0.1) 2px,rgba(0,255,255,0.1) 4px)}
+.bg-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;background:radial-gradient(ellipse at center,rgba(13,13,20,0.7) 0%,rgba(13,13,20,0.85) 100%);pointer-events:none}
+.scanlines{position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;pointer-events:none;opacity:0.015;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,255,0.1) 2px,rgba(0,255,255,0.1) 4px)}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,0.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,240,255,0.2);padding:0.6rem 2rem;display:flex;align-items:center;justify-content:space-between}
+nav{position:fixed;z-index:100;top:0;left:0;right:0;background:rgba(10,10,15,0.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,240,255,0.2);padding:0.6rem 2rem;display:flex;align-items:center;justify-content:space-between}
 .nav-brand{color:var(--cyan);font-size:1rem;font-weight:bold;text-shadow:var(--glow);letter-spacing:2px}
 .nav-links{display:flex;gap:1.2rem;flex-wrap:wrap}
 .nav-links a{color:var(--dim);text-decoration:none;font-size:0.78rem;letter-spacing:1px;transition:all 0.3s}
@@ -50,7 +52,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,0.9
 .tab.active{background:linear-gradient(135deg,rgba(0,240,255,0.15),rgba(255,0,170,0.15));border-color:var(--cyan);color:var(--cyan)}
 
 /* CARDS */
-.card{background:var(--surface);border:1px solid rgba(0,240,255,0.1);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;transition:all 0.3s;position:relative;overflow:visible}
+.card{background:var(--surface);border:1px solid rgba(0,240,255,0.15);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;transition:all 0.3s;position:relative;overflow:visible;box-shadow:inset 0 1px 0 rgba(255,255,255,0.03)
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--magenta));opacity:0.6}
 .card:hover{border-color:rgba(0,240,255,0.3);box-shadow:var(--glow)}
 .card h2{color:var(--cyan);font-size:1.05rem;margin-bottom:0.8rem;letter-spacing:2px;display:flex;align-items:center;gap:0.5rem}
@@ -150,6 +152,7 @@ tr.clickable{cursor:pointer}
 <body>
 <canvas id="webgl-bg"></canvas>
 <div class="scanlines"></div>
+<div class="bg-overlay"></div>
 
 <nav>
   <div class="nav-brand">&#9889; KALSHI//EXPLORER</div>
@@ -163,6 +166,7 @@ tr.clickable{cursor:pointer}
   </div>
 </nav>
 
+<div class="content-wrapper">
 <div class="hero">
   <h1>KALSHI//PROBABILITY_EXPLORER</h1>
   <p class="subtitle">PREDICTION MARKET ANALYSIS // IMPLIED PROBABILITY ENGINE // BOT ARCHITECTURE</p>
@@ -464,6 +468,7 @@ tr.clickable{cursor:pointer}
   </div>
 </section>
 
+</div>
 <div class="footer">
   <p>KALSHI PROBABILITY EXPLORER // Built for Zzzilla Island // Data: Kalshi Public API</p>
 </div>

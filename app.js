@@ -8,7 +8,7 @@
   var s=new THREE.Scene();
   var cam=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,1000);
   cam.position.z=30;
-  var N=800,g=new THREE.BufferGeometry();
+  var N=400,g=new THREE.BufferGeometry();
   var pos=new Float32Array(N*3),col=new Float32Array(N*3);
   for(var i=0;i<N;i++){
     pos[i*3]=(Math.random()-0.5)*60;
@@ -21,11 +21,11 @@
   }
   g.setAttribute('position',new THREE.BufferAttribute(pos,3));
   g.setAttribute('color',new THREE.BufferAttribute(col,3));
-  var m=new THREE.PointsMaterial({size:0.15,vertexColors:true,transparent:true,opacity:0.8});
+  var m=new THREE.PointsMaterial({size:0.1,vertexColors:true,transparent:true,opacity:0.3});
   var pts=new THREE.Points(g,m);
   s.add(pts);
   s.add(cam);
-  function draw(){r.render(s,cam);pts.rotation.y+=0.0003;pts.rotation.x+=0.0001;}
+  function draw(){r.render(s,cam);pts.rotation.y+=0.0001;pts.rotation.x+=0.00005;}
   function loop(){requestAnimationFrame(loop);draw();}
   loop();
   addEventListener('resize',function(){r.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();});
