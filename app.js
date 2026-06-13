@@ -39,9 +39,9 @@ function switchTab(sec){
   var el=document.getElementById(sec);
   if(el)el.style.display='block';
   document.querySelectorAll('[data-section="'+sec+'"]').forEach(function(t){t.classList.add('active');});
-  if(sec==='earnings')setTimeout(function(){drawEarningsChart();},50);
-  if(sec==='architecture')setTimeout(function(){drawArchDiagram();},50);
-  if(sec==='flowchart')setTimeout(function(){drawFlowChart();},50);
+  if(sec==='earnings')setTimeout(function(){requestAnimationFrame(function(){drawEarningsChart();});},100);
+  if(sec==='architecture')setTimeout(function(){requestAnimationFrame(function(){drawArchDiagram();});},100);
+  if(sec==='flowchart')setTimeout(function(){requestAnimationFrame(function(){drawFlowChart();});},100);
 }
 
 document.querySelectorAll('.tab').forEach(function(tab){
