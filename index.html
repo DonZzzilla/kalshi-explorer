@@ -7,6 +7,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
+
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a2e;--cyan:#00f0ff;--magenta:#ff00aa;--yellow:#ffe600;--green:#00ff88;--red:#ff3366;--text:#e0e0e0;--dim:#6a6a8a;--glow:0 0 20px rgba(0,240,255,0.3);--font:'Courier New',monospace}
 html{scroll-behavior:smooth}
@@ -56,6 +57,7 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.03)}
 tr:hover{background:rgba(0,240,255,0.05)}
 footer{text-align:center;padding:3rem 0;color:var(--dim);font-size:0.7rem;letter-spacing:2px;border-top:1px solid rgba(0,240,255,0.1);margin-top:3rem}
 @media(max-width:768px){.hero h1{font-size:1.8rem}.grid-2,.grid-3{grid-template-columns:1fr}.nav-links{display:none}}
+
 </style>
 </head>
 <body>
@@ -63,19 +65,20 @@ footer{text-align:center;padding:3rem 0;color:var(--dim);font-size:0.7rem;letter
 <div class="scanlines"></div>
 
 <nav>
-  <div class="nav-brand">&#9889; KALSHI//EXPLORER</div>
+  <div class="nav-brand">⚡ KALSHI//EXPLORER</div>
   <div class="nav-links">
-    <a href="#scanner">SCANNER</a><a href="#calculator">CALCULATOR</a><a href="#earnings">EARNINGS</a>
-    <a href="#architecture">ARCH</a><a href="#flowchart">API FLOW</a><a href="#bot">BOT</a>
+    <a href="#scanner">SCANNER</a><a href="#calculator">CALCULATOR</a><a href="#earnings">EARNINGS</a><a href="#architecture">ARCH</a><a href="#flowchart">API FLOW</a><a href="#bot">BOT</a>
   </div>
 </nav>
-<div class="container">
-<section class="hero">
-  <h1 class="glitch" data-text="KALSHI//PROBABILITY_EXPLORER">KALSHI//PROBABILITY_EXPLORER</h1>
+
+<header>
+  <h1>KALSHI//PROBABILITY_EXPLORER</h1>
   <p class="subtitle">PREDICTION MARKET ANALYSIS // IMPLIED PROBABILITY ENGINE // BOT ARCHITECTURE</p>
   <div style="margin-top:1.5rem"><span class="status" id="api-status"><span class="dot online"></span> API STATUS: CONNECTING...</span></div>
-</section>
+</header>
+
 <div class="ticker-bar"><div class="ticker-track" id="ticker-track"></div></div>
+
 <div class="tabs">
   <div class="tab active" data-section="scanner">SCANNER</div>
   <div class="tab" data-section="calculator">CALCULATOR</div>
@@ -84,584 +87,144 @@ footer{text-align:center;padding:3rem 0;color:var(--dim);font-size:0.7rem;letter
   <div class="tab" data-section="flowchart">API FLOW</div>
   <div class="tab" data-section="bot">BOT DESIGN</div>
 </div>
+
+<!-- SCANNER -->
 <section id="scanner" class="section">
   <div class="card">
-    <h2>&#128274; LIVE MARKET SCANNER</h2>
+    <h2>🔒 LIVE MARKET SCANNER</h2>
     <p style="color:var(--dim);font-size:0.75rem;margin-bottom:1rem">Real-time data from Kalshi public API. No auth needed. Prices = implied probability (0-100 cents)</p>
     <div style="display:flex;gap:0.8rem;flex-wrap:wrap;margin-bottom:1rem">
-      <button class="btn btn-sm" data-filter="all">ALL</button><button class="btn btn-sm" data-filter="open">OPEN</button>
+      <button class="btn btn-sm" data-filter="all">ALL</button>
+      <button class="btn btn-sm" data-filter="open">OPEN</button>
       <input type="text" id="scanner-search" placeholder="SEARCH..." style="min-width:200px;flex:1">
-      <button class="btn" id="btn-scan">&#10227; SCAN</button>
+      <button class="btn" id="btn-scan">⟳ SCAN</button>
     </div>
     <div id="scanner-results" class="market-list"><div class="loading"><div class="spinner"></div> Click SCAN to load markets...</div></div>
   </div>
   <div class="grid grid-2">
     <div class="card">
-      <h2>&#128202; TOP 10 BY CERTAINTY</h2>
-      <table><thead><tr><th>TICKER</th><th>TITLE</th><th>YES</th><th>NO</th><th>EDGE</th></tr></thead><tbody id="top10-body"></tbody></table>
+      <h2>📊 TOP 10 BY CERTAINTY</h2>
+      <table id="top10-table">
+        <thead><tr><th>TICKER</th><th>TITLE</th><th>YES</th><th>NO</th><th>EDGE</th></tr></thead>
+        <tbody id="top10-body"><tr><td colspan="5" style="text-align:center;color:var(--dim)">Click SCAN to see results</td></tr></tbody>
+      </table>
     </div>
     <div class="card">
-      <h2>&#127919; MARKET DETAIL</h2>
-      <div id="market-detail"><p style="color:var(--dim);text-align:center;padding:2rem">Select a market from the scanner</p></div>
+      <div id="market-detail">
+        <h2>🎯 MARKET DETAIL</h2>
+        <p style="color:var(--dim)">Select a market to see details</p>
+      </div>
     </div>
   </div>
 </section>
+
+<!-- CALCULATOR -->
 <section id="calculator" class="section" style="display:none">
   <div class="card">
-    <h2>&#127919; PROBABILITY AND EDGE CALCULATOR</h2>
-    <div class="calc-grid">
-      <div class="calc-input-group"><label>MARKET TICKER</label><input type="text" id="calc-ticker" value="KXHIGHNY"></div>
-      <div class="calc-input-group"><label>YOUR ESTIMATED TRUE PROBABILITY</label>
-        <input type="range" id="calc-true-prob" min="0" max="100" value="55" oninput="document.getElementById('tpv').textContent=this.value+'%'">
-        <div style="text-align:center;color:var(--cyan);font-size:1.2rem;font-weight:bold" id="tpv">55%</div></div>
-      <div class="calc-input-group"><label>MARKET YES PRICE (cents)</label><input type="number" id="calc-yes" min="0" max="100" value="50"></div>
-      <div class="calc-input-group"><label>BANKROLL ($)</label><input type="number" id="calc-bankroll" min="1" value="1000"></div>
-      <div class="calc-input-group"><label>NUMBER OF BETS</label><input type="number" id="calc-nbets" min="1" max="10000" value="100"></div>
-      <div class="calc-input-group"><label>WIN RATE (%)</label>
-        <input type="range" id="calc-winrate" min="0" max="100" value="60" oninput="document.getElementById('wrv').textContent=this.value+'%'">
-        <div style="text-align:center;color:var(--green);font-size:1.2rem;font-weight:bold" id="wrv">60%</div></div>
-    </div>
-    <div style="text-align:center;margin-top:1rem"><button class="btn" id="btn-calc">&#9889; CALCULATE EDGE</button></div>
-    <div class="calc-result" id="calc-result" style="display:none"><div class="big" id="calc-edge">+5.0%</div><div class="sub">EXPECTED VALUE PER $1 BET</div></div>
-    <div class="output" id="calc-output" style="display:none">
-      <div class="row"><span class="k">Implied Probability</span><span class="v" id="cout-implied">--</span></div>
-      <div class="row"><span class="k">Your Edge</span><span class="v" id="cout-edge">--</span></div>
-      <div class="row"><span class="k">Kelly Criterion Bet Size</span><span class="v" id="cout-kelly">--</span></div>
-      <div class="row"><span class="k">Expected Return (all bets)</span><span class="v" id="cout-exp">--</span></div>
-      <div class="row"><span class="k">95% CI Range</span><span class="v" id="cout-ci">--</span></div>
-      <div class="row"><span class="k">Sharpe Ratio</span><span class="v" id="cout-sharpe">--</span></div>
-    </div>
-  </div>
-</section>
-<section id="earnings" class="section" style="display:none">
-  <div class="grid grid-2">
-    <div class="card">
-      <h2>&#128176; EARNINGS POTENTIAL PROJECTIONS</h2>
-      <div class="calc-grid">
-        <div class="calc-input-group"><label>STARTING BANKROLL ($)</label><input type="number" id="earn-bankroll" value="1000" min="1"></div>
-        <div class="calc-input-group"><label>EDGE PER BET (%)</label><input type="number" id="earn-edge" value="5" min="1" max="50" step="0.5"></div>
-        <div class="calc-input-group"><label>BET SIZE (% OF BANKROLL)</label>
-          <input type="range" id="earn-bet-pct" min="1" max="25" value="2" oninput="document.getElementById('bpv').textContent=this.value+'%'">
-          <div style="text-align:center;color:var(--yellow)" id="bpv">2%</div></div>
-        <div class="calc-input-group"><label>BETS PER DAY</label><input type="number" id="earn-bets-day" value="5" min="1" max="100"></div>
+    <h2>🧮 PROBABILITY CALCULATOR</h2>
+    <div class="grid grid-2">
+      <div>
+        <label style="color:var(--dim);font-size:0.8rem">BUY.PRICE (cents)</label>
+        <input type="number" id="calc-buy" class="form-input" placeholder="e.g. 65" min="1" max="99" style="width:100%">
+        <label style="color:var(--dim);font-size:0.8rem;margin-top:0.8rem">INVESTMENT ($)</label>
+        <input type="number" id="calc-invest" class="form-input" placeholder="e.g. 100" min="1" style="width:100%">
+        <button class="btn" id="calc-btn" style="margin-top:1rem;width:100%">CALCULATE</button>
       </div>
-      <div style="text-align:center;margin-top:1rem"><button class="btn" id="btn-earn">&#128200; PROJECT EARNINGS</button></div>
-      <div id="earn-results"></div>
-    </div>
-    <div class="card"><h2>&#128202; GROWTH CHART</h2><div class="chart-container"><canvas id="earnChart"></canvas></div></div>
-  </div>
-  <div class="card" style="margin-top:1.5rem">
-    <h2>&#9888; REALITY CHECK</h2>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:1rem">
-      <div><h3 style="color:var(--green)">WHAT THE MATH SAYS</h3><p style="font-size:0.8rem;color:var(--dim)">With a 5% edge and 2% Kelly bets, expected growth is ~0.05% per bet. Over 1000 bets that is ~65% annualized.</p></div>
-      <div><h3 style="color:var(--yellow)">WHAT IS MISSING</h3><ul style="font-size:0.8rem;color:var(--dim);padding-left:1.2rem"><li>Model risk - your 90% win rate was likely overfit</li><li>Market efficiency - edges get arbed away</li><li>Liquidity - cannot always get filled</li><li>Spreads eat into edge</li></ul></div>
-      <div><h3 style="color:var(--red)">IN PRACTICE</h3><ul style="font-size:0.8rem;color:var(--dim);padding-left:1.2rem"><li>Overfitting is the #1 killer</li><li>Kalshi markets are small</li><li>Regression to the mean hits hard</li></ul></div>
+      <div id="calc-results" style="display:flex;flex-direction:column;gap:0.5rem;justify-content:center">
+        <p style="color:var(--dim)">Enter values and click Calculate</p>
+      </div>
     </div>
   </div>
 </section>
+
+<!-- EARNINGS -->
+<section id="earnings" class="section" style="display:none">
+  <div class="card">
+    <h2>💰 EARNINGS PROJECTIONS</h2>
+    <p style="color:var(--dim);font-size:0.75rem;margin-bottom:1rem">Projected monthly returns at different probability levels</p>
+    <div id="earnings-chart-container" style="position:relative;height:300px">
+      <canvas id="earnings-chart"></canvas>
+    </div>
+  </div>
+  <div class="card" style="margin-top:1rem">
+    <h2>📈 PROJECTION TABLE</h2>
+    <table id="earnings-table">
+      <thead><tr><th>PROBABILITY</th><th>INVESTMENT</th><th>MONTHLY PROFIT</th><th>ANNUAL PROFIT</th><th>ROI</th></tr></thead>
+      <tbody id="earnings-body"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
 <section id="architecture" class="section" style="display:none">
   <div class="card">
-    <h2>&#127970; PROBABILITY SCANNER - API FLOW ARCHITECTURE</h2>
-    <div class="arch-diagram">
-      <div class="arch-node"><div class="icon">&#128225;</div><div class="info"><div class="title">STEP 1: MARKET DISCOVERY</div><div class="desc">GET /markets?status=open</div></div><span class="badge pub">PUBLIC</span></div>
-      <div class="arch-arrow">&#9660;</div>
-      <div class="arch-node"><div class="icon">&#128202;</div><div class="info"><div class="title">STEP 2: ORDER BOOK FETCH</div><div class="desc">GET /markets/{ticker}/orderbook</div></div><span class="badge pub">PUBLIC</span></div>
-      <div class="arch-arrow">&#9660;</div>
-      <div class="arch-node"><div class="icon">&#128300;</div><div class="info"><div class="title">STEP 3: COMPUTE PROBABILITIES</div><div class="desc">mid=(bid+ask)/2, implied, spread</div></div><span class="badge compute">COMPUTE</span></div>
-      <div class="arch-arrow">&#9660;</div>
-      <div class="arch-node"><div class="icon">&#128270;</div><div class="info"><div class="title">STEP 4: DOMAIN MODEL</div><div class="desc">ML/rule, true prob, edge calc</div></div><span class="badge auth">YOUR MODEL</span></div>
-      <div class="arch-arrow">&#9660;</div>
-      <div class="arch-node"><div class="icon">&#9889;</div><div class="info"><div class="title">STEP 5: RANK AND FILTER</div><div class="desc">Sort by edge*volume, top 10</div></div><span class="badge compute">COMPUTE</span></div>
-      <div class="arch-arrow">&#9660;</div>
-      <div class="arch-node"><div class="icon">&#128176;</div><div class="info"><div class="title">STEP 6: BET PLACEMENT</div><div class="desc">POST /portfolio/orders + HMAC</div></div><span class="badge auth">AUTH</span></div>
-      <div class="arch-arrow">&#9660;</div>
-      <div class="arch-node"><div class="icon">&#128260;</div><div class="info"><div class="title">STEP 7: PORTFOLIO TRACKING</div><div class="desc">WebSocket stream, real-time P and L</div></div><span class="badge ws">WS</span></div>
-    </div>
+    <h2>🏗️ SYSTEM ARCHITECTURE</h2>
+    <div id="arch-diagram" style="width:100%;overflow-x:auto"></div>
   </div>
-  <div class="grid grid-2" style="margin-top:1.5rem">
+  <div class="grid grid-2" style="margin-top:1rem">
     <div class="card">
-      <h2>&#128203; API REFERENCE</h2>
-      <table><thead><tr><th>METHOD</th><th>ENDPOINT</th><th>AUTH</th><th>PURPOSE</th></tr></thead><tbody>
-        <tr><td style="color:var(--green)">GET</td><td>/v2/markets</td><td>NO</td><td>List all markets</td></tr>
-        <tr><td style="color:var(--green)">GET</td><td>/v2/markets/{ticker}/orderbook</td><td>NO</td><td>Order book</td></tr>
-        <tr><td style="color:var(--green)">GET</td><td>/v2/series/{ticker}</td><td>NO</td><td>Series info</td></tr>
-        <tr><td style="color:var(--yellow)">GET</td><td>/v2/portfolio/orders</td><td>YES</td><td>Open orders</td></tr>
-        <tr><td style="color:var(--red)">POST</td><td>/v2/portfolio/orders</td><td>YES</td><td>Place order</td></tr>
-        <tr><td style="color:var(--red)">DELETE</td><td>/v2/portfolio/orders/{id}</td><td>YES</td><td>Cancel order</td></tr>
-        <tr><td style="color:var(--magenta)">WS</td><td>/ws/v2</td><td>OPT</td><td>Real-time stream</td></tr>
-      </tbody></table>
+      <h2>🧠 ANALYSIS ENGINE</h2>
+      <ul style="color:var(--text);line-height:1.8">
+        <li>Implied probability extraction from market prices</li>
+        <li>Edge calculation: market price vs model price</li>
+        <li>Volume-weighted confidence scoring</li>
+        <li>Real-time market microstructure analysis</li>
+        <li>Historical price movement tracking</li>
+      </ul>
     </div>
     <div class="card">
-      <h2>&#128274; AUTHENTICATION</h2>
-      <p style="color:var(--dim);font-size:0.8rem;margin-bottom:1rem">Kalshi uses HMAC-SHA256. Get API key + secret from your Kalshi account.</p>
-<pre>
-Headers:
-KALSHI-ACCESS-KEY: your_api_key
-KALSHI-ACCESS-TIMESTAMP: 1718000000000
-KALSHI-ACCESS-SIGNATURE: hmac_sha256(
-  timestamp + method + path + body,
-  api_secret)
-Rate Limits: ~10 tokens/request
-</pre>
+      <h2>📡 DATA PIPELINE</h2>
+      <ul style="color:var(--text);line-height:1.8">
+        <li>Kalshi REST API (public, no auth)</li>
+        <li>CORS proxy relay for browser access</li>
+        <li>Client-side caching (5-min TTL)</li>
+        <li>WebSocket for real-time updates</li>
+        <li>Fallback to demo data when API blocked</li>
+      </ul>
     </div>
   </div>
 </section>
+
+<!-- API FLOW -->
 <section id="flowchart" class="section" style="display:none">
   <div class="card">
-    <h2>&#128260; API FLOW VISUALIZER</h2>
-    <canvas id="flowCanvas"></canvas>
+    <h2>🔄 API FLOW</h2>
+    <div id="flowchart-container" style="width:100%;overflow-x:auto"></div>
   </div>
 </section>
+
+<!-- BOT DESIGN -->
 <section id="bot" class="section" style="display:none">
   <div class="card">
-    <h2>&#129302; AUTOMATED TRADING BOT - BLUEPRINT</h2>
-    <h3>COMPONENT ARCHITECTURE</h3>
-<pre>
-+--------------------------------------------------+
-|               HERMES BOT LAYER                   |
-|  +---------+  +--------+  +----------+         |
-|  |Scheduler|  |Logger  |  |Discord   |         |
-|  | (cron)  |  |(files) |  |Alerts    |         |
-|  +----+----+  +--------+  +----+-----+         |
-|       +----------+--------------+               |
-|          +------v------+                         |
-|          | Orchestrator |                         |
-|          |  main.py     |                         |
-|  +-------+-------------+----------+             |
-|  |Scanner|->  Ranker   ->|Risk Mgmt |             |
-|  +-------+             +----+-----+             |
-+------------------------------+-------------------+
-                               |
-+------------------------------v-------------------+
-|            EXECUTION ENGINE                      |
-|  +----------+ +-----------+ +----------+       |
-|  |Order     | |Position   | |Cancel    |       |
-|  |Placer    | |Tracker    | |Manager   |       |
-|  +----+-----+ +-----------+ +----------+       |
-+-------+--------------------------------------+
-        |
-+-------v--------------------------------------+
-|            KALSHI API LAYER                    |
-|  +----------+ +----------+ +----------+      |
-|  |Public API| |Auth API  | |WebSocket |      |
-|  |/markets  | |/portfolio| |/ws/v2    |      |
-|  +----------+ +----------+ +----------+      |
-+--------------------------------------------------+
+    <h2>🤖 DISCORD BOT DESIGN</h2>
+    <div class="grid grid-2">
+      <div>
+        <h3 style="color:var(--cyan);margin-bottom:0.5rem">Command Structure</h3>
+<pre style="color:var(--dim);font-size:0.75rem;background:var(--darker);padding:1rem;border-radius:4px;overflow-x:auto">
+/kalshi scan [topic]   - Scan markets
+/kalshi detail &lt;ticker&gt; - Market detail  
+/kalshi calc &lt;prob&gt; &lt;invest&gt;
+/kalshi earnings [mo]   - Projections
 </pre>
-    <h3>RISK CONTROLS (NON-NEGOTIABLE)</h3>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;margin:1rem 0">
-      <div style="background:var(--surface2);border:1px solid rgba(255,0,170,0.2);border-radius:8px;padding:1rem">
-        <div style="color:var(--red);font-weight:bold;font-size:0.85rem;margin-bottom:0.5rem">CIRCUIT BREAKERS</div>
-        <ul style="font-size:0.75rem;color:var(--dim);padding-left:1rem"><li>Max loss/day: $500</li><li>Max loss/bet: 2% bankroll</li><li>Stop after 5 consecutive losses</li><li>Max open positions: 10</li></ul></div>
-      <div style="background:var(--surface2);border:1px solid rgba(0,240,255,0.2);border-radius:8px;padding:1rem">
-        <div style="color:var(--cyan);font-weight:bold;font-size:0.85rem;margin-bottom:0.5rem">MONITORING</div>
-        <ul style="font-size:0.75rem;color:var(--dim);padding-left:1rem"><li>Real-time P and L dashboard</li><li>Win rate (rolling 50)</li><li>Edge decay alerts</li></ul></div>
-      <div style="background:var(--surface2);border:1px solid rgba(255,230,0,0.2);border-radius:8px;padding:1rem">
-        <div style="color:var(--yellow);font-weight:bold;font-size:0.85rem;margin-bottom:0.5rem">FAILSAFES</div>
-        <ul style="font-size:0.75rem;color:var(--dim);padding-left:1rem"><li>Paper trading default</li><li>Manual approval first 100 bets</li><li>Auto-disable on 3% daily drawdown</li><li>Kill switch via Discord</li></ul></div>
-    </div>
-    <h3>PSEUDOCODE</h3>
-<pre>
-async def scanner_loop():
-    markets, cursor = [], None
-    while True:
-        batch = await kalshi.markets(cursor=cursor, limit=100)
-        markets.extend(batch)
-        if not batch.next_cursor: break
-        cursor = batch.next_cursor
-
-    probs = []
-    for m in markets:
-        ob = await kalshi.orderbook(m.ticker)
-        yes_mid = (ob.yes_best_bid + ob.yes_best_ask) / 2
-        spread = ob.yes_best_ask - ob.yes_best_bid
-        probs.append({'ticker': m.ticker, 'title': m.title,
-                      'implied': yes_mid/100, 'spread': spread})
-
-    liquid = [p for p in probs if p['spread'] < 5 and p['volume'] > 1000]
-
-    for p in liquid:
-        p['model_prob'] = your_model.predict(p['title'])
-        p['edge'] = p['model_prob'] - p['implied']
-
-    ranked = sorted([p for p in liquid if p['edge'] > 0.02],
-                    key=lambda x: x['edge']*x['volume'], reverse=True)
-
-    for bet in ranked[:10]:
-        kelly = kelly_criterion(bet['edge'], bet['model_prob'])
-        if kelly > 0.01: alert(f"{bet['title']} | {bet['edge']:.1%}")
-    return ranked[:10]
-</pre>
-    <h3>REALISTIC EARNINGS</h3>
-    <div class="output">
-      <div class="row"><span class="k">Kalshi daily volume</span><span class="v">$5M-$50M</span></div>
-      <div class="row"><span class="k">Realistic bankroll</span><span class="v">$500-$5,000</span></div>
-      <div class="row"><span class="k">Sustainable edge (after spread)</span><span class="v">1-5%</span></div>
-      <div class="row"><span class="k">Bets fillable per day</span><span class="v">5-20</span></div>
-      <div class="row"><span class="k">Daily return (2% Kelly, 3% edge)</span><span class="v">$0.60-$6.00</span></div>
-      <div class="row"><span class="k">Annual (realistic)</span><span class="v">$220-$2,200</span></div>
-      <div class="row"><span class="k">Annual (optimistic)</span><span class="v">$5K-$50K</span></div>
-      <div class="row"><span class="k">Risk of total loss</span><span class="v" style="color:var(--red)">HIGH w/o risk mgmt</span></div>
+      </div>
+      <div>
+        <h3 style="color:var(--cyan);margin-bottom:0.5rem">Features</h3>
+        <ul style="color:var(--text);line-height:1.8">
+          <li>Real-time market scanning</li>
+          <li>Probability edge calculator</li>
+          <li>Earnings projections</li>
+          <li>Portfolio tracking</li>
+          <li>Alert system for significant moves</li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
-<footer>KALSHI//PROBABILITY_EXPLORER v1.0 - BUILT FOR DONZZZILLA<br>NOT FINANCIAL ADVICE - DO YOUR OWN RESEARCH<br>NO API KEYS USED - ALL DATA FROM PUBLIC ENDPOINTS</footer>
+
+<div class="footer">
+  <p>KALSHI PROBABILITY EXPLORER // Built for Zzzilla Island // Data: Kalshi Public API</p>
 </div>
 
-<script>
-
-// ===== THREE.JS BACKGROUND =====
-(function(){
-  var c=document.getElementById('webgl-bg');
-  if(!c)return;
-  var r=new THREE.WebGLRenderer({canvas:c,antialias:true,alpha:true});
-  r.setSize(innerWidth,innerHeight);
-  r.setPixelRatio(Math.min(devicePixelRatio,2));
-  var s=new THREE.Scene();
-  var cam=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,1000);
-  cam.position.z=30;
-  var N=800,g=new THREE.BufferGeometry();
-  var pos=new Float32Array(N*3),col=new Float32Array(N*3);
-  for(var i=0;i<N;i++){
-    pos[i*3]=(Math.random()-0.5)*60;
-    pos[i*3+1]=(Math.random()-0.5)*60;
-    pos[i*3+2]=(Math.random()-0.5)*40;
-    var t=Math.random();
-    if(t<0.6){col[i*3]=0;col[i*3+1]=0.94;col[i*3+2]=1;}
-    else if(t<0.85){col[i*3]=1;col[i*3+1]=0;col[i*3+2]=0.67;}
-    else{col[i*3]=0;col[i*3+1]=1;col[i*3+2]=0.53;}
-  }
-  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
-  g.setAttribute('color',new THREE.BufferAttribute(col,3));
-  s.add(new THREE.Points(g,new THREE.PointsMaterial({size:0.15,vertexColors:true,transparent:true,opacity:0.6,blending:THREE.AdditiveBlending})));
-  var gg=new THREE.PlaneGeometry(60,60,30,30);
-  var gm=new THREE.MeshBasicMaterial({color:0x00f0ff,wireframe:true,transparent:true,opacity:0.04});
-  var grid=new THREE.Mesh(gg,gm);
-  grid.rotation.x=-Math.PI/2;grid.position.y=-25;s.add(grid);
-  for(var i=0;i<4;i++){
-    var rg=new THREE.TorusGeometry(3+i*2,0.02,16,100);
-    var rm=new THREE.MeshBasicMaterial({color:i%2?0xff00aa:0x00f0ff,transparent:true,opacity:0.08});
-    var ring=new THREE.Mesh(rg,rm);
-    ring.position.set((Math.random()-0.5)*20,(Math.random()-0.5)*20,(Math.random()-0.5)*10);
-    ring.rotation.x=Math.random()*Math.PI;
-    ring.userData.spd=0.001+Math.random()*0.003;
-    s.add(ring);
-  }
-  (function loop(){
-    requestAnimationFrame(loop);
-    var p=g.attributes.position.array;
-    for(var i=0;i<N;i++){
-      p[i*3+1]+=Math.sin(Date.now()*0.001+i*0.1)*0.002;
-      p[i*3]+=Math.cos(Date.now()*0.0005+i*0.05)*0.001;
-    }
-    g.attributes.position.needsUpdate=true;
-    s.children[0].rotation.y+=0.0003;
-    s.children[1].rotation.z+=0.0001;
-    s.children.forEach(function(o){if(o.userData&&o.userData.spd)o.rotation.z+=o.userData.spd;});
-    r.render(s,cam);
-  })();
-  addEventListener('resize',function(){
-    cam.aspect=innerWidth/innerHeight;
-    cam.updateProjectionMatrix();
-    r.setSize(innerWidth,innerHeight);
-  });
-})();
-
-// ===== TABS =====
-document.querySelectorAll('.tab').forEach(function(t){
-  t.addEventListener('click',function(){
-    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
-    t.classList.add('active');
-    document.querySelectorAll('.section').forEach(function(sec){sec.style.display='none';});
-    document.getElementById(t.dataset.section).style.display='block';
-    if(t.dataset.section==='flowchart')setTimeout(initFlowChart,50);
-  });
-});
-document.querySelectorAll('.nav-links a').forEach(function(l){
-  l.addEventListener('click',function(e){
-    e.preventDefault();
-    var target=l.getAttribute('href').slice(1);
-    var tab=document.querySelector('.tab[data-section="'+target+'"]');
-    if(tab)tab.click();
-    scrollTo({top:0,behavior:'smooth'});
-  });
-});
-
-// ===== DEMO DATA =====
-var DEMO_MARKETS=[
-  {ticker:'KXHIGHNY',title:'Highest Temp in NYC Today',outcomePrices:'[72,28]',volume:320000,status:'open'},
-  {ticker:'KXBTC-26JUN15-B100000',title:'BTC Above $100K Jun 15',outcomePrices:'[15,85]',volume:89000000,status:'open'},
-  {ticker:'KXETH-26JUN15-B50000',title:'ETH Above $5K Jun 15',outcomePrices:'[22,78]',volume:23000000,status:'open'},
-  {ticker:'USPRES26',title:'US Presidential Approval',outcomePrices:'[48,52]',volume:1500000,status:'open'},
-  {ticker:'KXRATE-26JUL01',title:'Fed Rate Cut Jul 2026',outcomePrices:'[65,35]',volume:5600000,status:'open'},
-  {ticker:'KXGDP-26Q3',title:'GDP Growth Q3 2026',outcomePrices:'[55,45]',volume:1200000,status:'open'},
-  {ticker:'KXINFLATION-26DEC01',title:'CPI Under 3% Dec 2026',outcomePrices:'[35,65]',volume:4300000,status:'open'},
-  {ticker:'KXSNP500',title:'S&P 500 Above 7000',outcomePrices:'[8,92]',volume:120000000,status:'open'},
-  {ticker:'KXDJIA',title:'Dow Above 45000',outcomePrices:'[12,88]',volume:95000000,status:'open'},
-  {ticker:'KXNASDAQ',title:'Nasdaq Above 20000',outcomePrices:'[18,82]',volume:110000000,status:'open'},
-  {ticker:'KXVIX',title:'VIX Under 25 Jul 15',outcomePrices:'[70,30]',volume:8900000,status:'open'},
-  {ticker:'KXOIL',title:'Oil Above $100 Aug 2026',outcomePrices:'[25,75]',volume:27000000,status:'open'},
-  {ticker:'KXGOLD',title:'Gold Above $2500',outcomePrices:'[40,60]',volume:45000000,status:'open'},
-  {ticker:'KXUNEMP',title:'Unemployment Under 4%',outcomePrices:'[60,40]',volume:1800000,status:'open'},
-  {ticker:'KXAI26',title:'Major AI Regulation Passed',outcomePrices:'[55,45]',volume:14000000,status:'open'},
-  {ticker:'KXCLIMATE',title:'Global Temp Record 26',outcomePrices:'[75,25]',volume:3400000,status:'open'},
-  {ticker:'KXTRADE26',title:'US-China Trade Deal 2026',outcomePrices:'[30,70]',volume:21000000,status:'open'},
-  {ticker:'KXSPACE',title:'SpaceX Orbital Launch',outcomePrices:'[80,20]',volume:7500000,status:'open'},
-  {ticker:'KXELECTION26',title:'2026 Midterm Result',outcomePrices:'[52,48]',volume:45000000,status:'open'},
-  {ticker:'KXCOVID',title:'New COVID Variant 2026',outcomePrices:'[10,90]',volume:5200000,status:'open'}
-];
-
-function parsePrices(m){
-  var raw=m.outcomePrices||'[]';
-  if(typeof raw==='string'){
-    try{
-      var c=raw.replace(/[\[\]]/g,'').trim();
-      if(!c)return[0,0];
-      return c.split(',').map(function(x){return parseFloat(x.trim())||0;});
-    }catch(e){return[0,0];}
-  }
-  if(Array.isArray(raw))return raw.map(function(x){return parseFloat(x)||0;});
-  return[0,0];
-}
-
-function formatVol(v){
-  if(!v)return '--';
-  if(v>=1e6)return(v/1e6).toFixed(1)+'M';
-  if(v>=1e3)return(v/1e3).toFixed(1)+'K';
-  return v.toString();
-}
-
-var allMarkets=[];
-
-async function scanMarkets(){
-  var st=document.getElementById('api-status');
-  var res=document.getElementById('scanner-results');
-  st.innerHTML='<span class="status"><span class="dot online" style="background:var(--yellow)"></span> SCANNING...</span>';
-  res.innerHTML='<div class="loading"><div class="spinner"></div> Scanning...</div>';
-  try{
-    var liveMarkets=[];
-    try{
-      var proxyUrl='https://api.allorigins.win/raw?url='+encodeURIComponent('https://external-api.kalshi.com/trade-api/v2/markets?status=open&limit=100');
-      var r=await fetch(proxyUrl);
-      var d=await r.json();
-      if(d.markets&&d.markets.length>0)liveMarkets=d.markets;
-    }catch(apiErr){
-      console.warn('API failed:',apiErr.message);
-    }
-    if(liveMarkets.length>0){
-      allMarkets=liveMarkets;
-      st.innerHTML='<span class="status"><span class="dot online"></span> LIVE - '+allMarkets.length+' MARKETS</span>';
-    }else{
-      allMarkets=DEMO_MARKETS.slice();
-      st.innerHTML='<span class="status"><span class="dot online" style="background:var(--yellow)"></span> DEMO MODE (API CORS BLOCKED)</span>';
-    }
-    displayResults(allMarkets);
-    buildTicker(allMarkets);
-    buildTop10(allMarkets);
-  }catch(err){
-    console.error('Scan error:',err);
-    allMarkets=DEMO_MARKETS.slice();
-    displayResults(allMarkets);
-    buildTicker(allMarkets);
-    st.innerHTML='<span class="status"><span class="dot offline"></span> USING DEMO DATA</span>';
-  }
-}
-
-function displayResults(markets,filter,search){
-  if(!filter)filter='all';
-  if(!search)search='';
-  var el=document.getElementById('scanner-results');
-  var f=markets.slice();
-  if(filter==='open')f=f.filter(function(m){return m.status==='open';});
-  if(filter==='closed')f=f.filter(function(m){return m.status!=='open';});
-  if(search){
-    var s=search.toLowerCase();
-    f=f.filter(function(m){
-      return (m.ticker||'').toLowerCase().includes(s)||(m.title||'').toLowerCase().includes(s);
-    });
-  }
-  if(!f.length){el.innerHTML='<p style="color:var(--dim);text-align:center;padding:2rem">No markets match your filter</p>';return;}
-  var h='';
-  f.slice(0,200).forEach(function(m){
-    try{
-      var p=parsePrices(m);
-      var y=p[0]||0,n=p[1]||(100-y);
-      var pc=y>65?'high':y<35?'low':'mid';
-      h+='<div class="market-row" data-ticker="'+m.ticker+'" onclick="selectMarket(\''+m.ticker+'\')">';
-      h+='<div class="ticker">'+m.ticker+'</div>';
-      h+='<div class="title">'+(m.title||'').slice(0,60)+'</div>';
-      h+='<div class="prob '+pc+'">'+parseFloat(y).toFixed(0)+'&#162;</div>';
-      h+='<div class="vol">'+formatVol(m.volume)+'</div></div>';
-    }catch(e){}
-  });
-  el.innerHTML=h;
-}
-
-window.selectMarket=function(ticker){
-  try{
-    var m=allMarkets.find(function(x){return x.ticker===ticker;});
-    if(!m)return;
-    var el=document.getElementById('market-detail');
-    el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
-    var p=parsePrices(m);
-    var y=p[0]||0,n=p[1]||(100-y);
-    var html='<h3 style="color:var(--cyan);font-size:1rem;margin-bottom:0.5rem">'+m.ticker+'</h3>';
-    html+='<p style="font-size:0.85rem;margin-bottom:0.5rem">'+(m.title||'')+'</p>';
-    html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin:0.8rem 0">';
-    html+='<div style="text-align:center"><div style="color:var(--green);font-size:1.5rem;font-weight:bold">'+y.toFixed(1)+'&#162;</div><div style="font-size:0.65rem;color:var(--dim)">YES</div></div>';
-    html+='<div style="text-align:center"><div style="color:var(--red);font-size:1.5rem;font-weight:bold">'+n.toFixed(1)+'&#162;</div><div style="font-size:0.65rem;color:var(--dim)">NO</div></div>';
-    html+='<div style="text-align:center"><div style="color:var(--cyan);font-size:1.5rem;font-weight:bold">'+(y/100).toFixed(2)+'</div><div style="font-size:0.65rem;color:var(--dim)">IMPLIED PROB</div></div></div>';
-    html+='<div class="prob-bar-container"><div class="prob-bar-label"><span style="color:var(--green)">YES</span><span style="color:var(--red)">NO</span></div><div class="prob-bar"><div class="prob-bar-fill yes" style="width:'+y+'%"></div><div class="prob-bar-fill no" style="width:'+n+'%"></div></div></div>';
-    html+='<div style="font-size:0.7rem;color:var(--dim);margin-top:0.5rem">Vol: '+formatVol(m.volume)+' | Status: '+(m.status||'N/A')+'</div>';
-    el.innerHTML=html;
-    document.getElementById('calc-ticker').value=m.ticker;
-    document.getElementById('calc-yes').value=parseFloat(y).toFixed(0);
-  }catch(err){console.error('selectMarket:',err);}
-};
-
-function buildTicker(markets){
-  var t=document.getElementById('ticker-track');
-  var h='';
-  for(var l=0;l<2;l++)markets.slice(0,25).forEach(function(m){
-    try{
-      var p=parsePrices(m),y=parseFloat(p[0])||0;
-      var chg=y+(Math.random()-0.5)*4;
-      var cc=chg>=0?'up':'down';
-      h+='<div class="ticker-item"><span class="label">'+m.ticker+'</span><span class="val">'+y.toFixed(0)+'&#162;</span><span class="chg '+cc+'">'+(chg>=0?'+':'')+chg.toFixed(1)+'</span></div>';
-    }catch(e){}
-  });
-  t.innerHTML=h;
-}
-
-function buildTop10(markets){
-  var tb=document.getElementById('top10-body');
-  var ranked=markets.map(function(m){
-    try{
-      var p=parsePrices(m),y=parseFloat(p[0])||0;
-      return{ticker:m.ticker,title:(m.title||'').slice(0,40),yes:y,no:100-y,edge:Math.abs(y-50)};
-    }catch(e){return null;}
-  }).filter(function(x){return x;});
-  ranked.sort(function(a,b){return b.edge-a.edge;});
-  var h='';
-  ranked.slice(0,10).forEach(function(r){
-    var pc=r.edge>25?'high':r.edge>15?'mid':'low';
-    h+='<tr><td style="color:var(--cyan);font-weight:bold">'+r.ticker+'</td><td style="font-size:0.7rem">'+r.title+'</td><td><span class="prob '+pc+'">'+r.yes.toFixed(0)+'&#162;</span></td><td style="color:var(--red)">'+r.no.toFixed(0)+'&#162;</span></td><td style="color:var(--yellow)">'+r.edge.toFixed(0)+'</td></tr>';
-  });
-  tb.innerHTML=h;
-}
-
-document.getElementById('btn-scan').addEventListener('click',scanMarkets);
-document.querySelectorAll('[data-filter]').forEach(function(b){
-  b.addEventListener('click',function(){
-    document.querySelectorAll('[data-filter]').forEach(function(x){x.classList.remove('active');});
-    b.classList.add('active');
-    displayResults(allMarkets,b.dataset.filter,document.getElementById('scanner-search').value);
-  });
-});
-document.getElementById('scanner-search').addEventListener('input',function(e){
-  var f=document.querySelector('[data-filter].active');
-  displayResults(allMarkets,f?f.dataset.filter:'all',e.target.value);
-});
-
-document.getElementById('btn-calc').addEventListener('click',function(){
-  var tp=parseFloat(document.getElementById('calc-true-prob').value)/100;
-  var yp=parseFloat(document.getElementById('calc-yes').value)/100;
-  var br=parseFloat(document.getElementById('calc-bankroll').value);
-  var nb=parseInt(document.getElementById('calc-nbets').value);
-  var wr=parseFloat(document.getElementById('calc-winrate').value)/100;
-  var edge=tp-yp,kelly=Math.max(0,edge/(1-yp));
-  var kb=Math.min(kelly*br,br*0.25),ev=edge*kb*nb;
-  var mean=wr*nb,std=Math.sqrt(nb*wr*(1-wr));
-  var ciL=Math.max(0,br+(mean-2*std)*kb),ciH=br+(mean+2*std)*kb;
-  document.getElementById('calc-result').style.display='block';
-  document.getElementById('calc-edge').textContent=(edge>=0?'+':'')+(edge*100).toFixed(1)+'%';
-  document.getElementById('calc-edge').style.color=edge>=0?'var(--green)':'var(--red)';
-  document.getElementById('calc-output').style.display='block';
-  document.getElementById('cout-implied').textContent=(yp*100).toFixed(1)+'%';
-  document.getElementById('cout-edge').textContent=(edge*100).toFixed(1)+'%';
-  document.getElementById('cout-kelly').textContent='$'+kb.toFixed(2)+' ('+(kelly*100).toFixed(1)+'%)';
-  document.getElementById('cout-exp').textContent=(ev>=0?'+':'')+'$'+ev.toFixed(2);
-  document.getElementById('cout-ci').textContent='$'+ciL.toFixed(0)+' - $'+ciH.toFixed(0);
-  document.getElementById('cout-sharpe').textContent=(Math.sqrt(nb)*edge/(std||1)).toFixed(2);
-});
-
-var earnChart=null;
-document.getElementById('btn-earn').addEventListener('click',function(){
-  var br=parseFloat(document.getElementById('earn-bankroll').value);
-  var ed=parseFloat(document.getElementById('earn-edge').value)/100;
-  var bp=parseFloat(document.getElementById('earn-bet-pct').value)/100;
-  var bpd=parseInt(document.getElementById('earn-bets-day').value);
-  var projs=[];
-  [30,90,180,365].forEach(function(d){
-    var nB=bpd*d,dEV=ed*(br*bp)*bpd,vd=Math.sqrt(nB)*br*bp*0.5;
-    projs.push({d:d,proj:Math.max(0,br+dEV*d),pess:Math.max(0,br+dEV*d-2*vd)});
-  });
-  var mx=Math.max.apply(null,projs.map(function(p){return p.proj;}));
-  var h='<div style="margin-top:1.5rem">';
-  var cols=['#00f0ff','#00ff88','#ffe600','#ff00aa'];
-  projs.forEach(function(p,i){
-    var pct=Math.max(5,(p.proj/mx)*100);
-    var l=p.d===30?'30 DAYS':p.d===90?'90 DAYS':p.d===180?'6 MONTHS':'1 YEAR';
-    h+='<div class="earnings-row"><div class="period">'+l+'</div><div class="bar"><div class="bar-fill" style="width:'+pct+'%;background:linear-gradient(90deg,'+cols[i]+','+cols[i]+'66)"><span class="bar-label">$'+((p.proj>=1e3?(p.proj/1e3).toFixed(1)+'K':p.proj.toFixed(0))+'</span></div></div><div class="amount">+$'+(p.proj-br).toFixed(0)+'</div></div>';
-  });
-  h+='</div>';
-  document.getElementById('earn-results').innerHTML=h;
-  var labels=[],data=[];
-  for(var d=0;d<=365;d+=15){labels.push(d+'d');data.push(Math.max(0,br+ed*br*bp*bpd*d));}
-  if(!earnChart){
-    var ctx=document.getElementById('earnChart').getContext('2d');
-    earnChart=new Chart(ctx,{type:'line',data:{labels:labels,datasets:[{label:'Projected',data:data,borderColor:'#00f0ff',backgroundColor:'rgba(0,240,255,0.1)',fill:true,tension:0.3,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#6a6a8a',font:{family:'Courier New'}}}},scales:{x:{ticks:{color:'#6a6a8a'},grid:{color:'rgba(255,255,255,0.05)'}},y:{ticks:{color:'#6a6a8a',callback:function(v){return '$'+v.toLocaleString();}},grid:{color:'rgba(255,255,255,0.05)'}}}}});
-  }else{earnChart.data.labels=labels;earnChart.data.datasets[0].data=data;earnChart.update();}
-});
-
-function initFlowChart(){
-  var c=document.getElementById('flowCanvas');if(!c)return;
-  c.width=c.offsetWidth;c.height=500;
-  var ctx=c.getContext('2d');
-  var nodes=[
-    {x:0.5,y:0.03,w:0.3,h:0.08,l:'START',sub:'Cron / Manual',c:'#00f0ff',s:'circle'},
-    {x:0.5,y:0.15,w:0.32,h:0.09,l:'DISCOVER MARKETS',sub:'GET /markets',c:'#00f0ff'},
-    {x:0.5,y:0.28,w:0.32,h:0.09,l:'FETCH ORDER BOOKS',sub:'GET /orderbook',c:'#00f0ff'},
-    {x:0.5,y:0.41,w:0.32,h:0.09,l:'COMPUTE PROBABILITIES',sub:'mid spread volume',c:'#00ff88'},
-    {x:0.5,y:0.54,w:0.32,h:0.09,l:'APPLY MODEL',sub:'true prob edge',c:'#ffe600'},
-    {x:0.5,y:0.67,w:0.32,h:0.09,l:'RANK AND FILTER',sub:'edge*vol top 10',c:'#00ff88'},
-    {x:0.5,y:0.80,w:0.32,h:0.09,l:'EXECUTE',sub:'Alert Trade P&L',c:'#ff00aa'},
-    {x:0.5,y:0.93,w:0.28,h:0.06,l:'TRACK AND ITERATE',sub:'WebSocket stream',c:'#ff00aa',s:'circle'}
-  ];
-  var W=c.width,H=c.height,anim=0;
-  function rr(x,y,w,h,rd){ctx.beginPath();ctx.moveTo(x+rd,y);ctx.lineTo(x+w-rd,y);ctx.quadraticCurveTo(x+w,y,x+w,y+rd);ctx.lineTo(x+w,y+h-rd);ctx.quadraticCurveTo(x+w,y+h,x+w-rd,y+h);ctx.lineTo(x+rd,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-rd);ctx.lineTo(x,y+rd);ctx.quadraticCurveTo(x,y,x+rd,y);ctx.closePath();}
-  function draw(){
-    ctx.clearRect(0,0,W,H);anim+=0.015;
-    ctx.strokeStyle='rgba(0,240,255,0.03)';ctx.lineWidth=1;
-    for(var gx=0;gx<W;gx+=40){ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke();}
-    for(var gy=0;gy<H;gy+=40){ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();}
-    for(var i=0;i<nodes.length-1;i++){
-      var f=nodes[i],t=nodes[i+1];
-      var x1=f.x*W,y1=(f.y+f.h)*H,x2=t.x*W,y2=t.y*H;
-      ctx.save();ctx.setLineDash([8,6]);ctx.lineDashOffset=-anim*50;
-      ctx.strokeStyle='rgba(0,240,255,'+(0.3+Math.sin(anim+i)*0.1)+')';ctx.lineWidth=2;
-      ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.restore();
-      var ang=Math.atan2(y2-y1,x2-x1);ctx.fillStyle='rgba(0,240,255,0.6)';
-      ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-10*Math.cos(ang-0.4),y2-10*Math.sin(ang-0.4));ctx.lineTo(x2-10*Math.cos(ang+0.4),y2-10*Math.sin(ang+0.4));ctx.closePath();ctx.fill();
-    }
-    nodes.forEach(function(n,i){
-      var nx=n.x*W-n.w*W/2,ny=n.y*H,nw=n.w*W,nh=n.h*H;
-      ctx.save();ctx.shadowColor=n.c;ctx.shadowBlur=8;
-      rr(nx,ny,nw,nh,n.s==='circle'?nh/2:10);
-      ctx.fillStyle=n.c+'15';ctx.fill();ctx.strokeStyle=n.c+'80';ctx.lineWidth=1.5;ctx.stroke();ctx.restore();
-      ctx.fillStyle=n.c;ctx.font='bold 11px Courier New';ctx.textAlign='center';
-      ctx.fillText(n.l,nx+nw/2,ny+nh/2-(n.s==='circle'?0:2));
-      ctx.fillStyle='#6a6a8a';ctx.font='9px Courier New';
-      ctx.fillText(n.sub,nx+nw/2,ny+nh/2+12);
-      if(n.s==='circle'){ctx.beginPath();ctx.arc(nx+nw/2,ny+nh/2,8,0,Math.PI*2);ctx.fillStyle=n.c;ctx.fill();}
-    });
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-
-setTimeout(function(){scanMarkets();},500);
-
-</script>
+<script src="app.js"></script>
 </body>
 </html>
