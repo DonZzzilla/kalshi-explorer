@@ -7,57 +7,140 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a2e;--cyan:#00f0ff;--magenta:#ff00aa;--yellow:#ffe600;--green:#00ff88;--red:#ff3366;--text:#e0e0e0;--dim:#6a6a8a;--glow:0 0 20px rgba(0,240,255,0.3);--font:'Courier New',monospace}
 html{scroll-behavior:smooth}
 body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
 #webgl-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .scanlines{position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;pointer-events:none;opacity:0.03;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,255,0.1) 2px,rgba(0,255,255,0.1) 4px)}
-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,0.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,240,255,0.2);padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-between}
-.nav-brand{color:var(--cyan);font-size:1.1rem;font-weight:bold;text-shadow:var(--glow);letter-spacing:2px}
-.nav-links{display:flex;gap:1.5rem}
-.nav-links a{color:var(--dim);text-decoration:none;font-size:0.85rem;letter-spacing:1px;transition:all 0.3s}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,0.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,240,255,0.2);padding:0.6rem 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{color:var(--cyan);font-size:1rem;font-weight:bold;text-shadow:var(--glow);letter-spacing:2px}
+.nav-links{display:flex;gap:1.2rem;flex-wrap:wrap}
+.nav-links a{color:var(--dim);text-decoration:none;font-size:0.78rem;letter-spacing:1px;transition:all 0.3s}
 .nav-links a:hover,.nav-links a.active{color:var(--cyan);text-shadow:0 0 10px rgba(0,240,255,0.5)}
-.container{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:6rem 1.5rem 2rem}
-.hero{text-align:center;padding:4rem 0 3rem}
-.hero h1{font-size:2.8rem;font-weight:bold;letter-spacing:4px;background:linear-gradient(135deg,var(--cyan),var(--magenta));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:glow-pulse 3s ease-in-out infinite}
-.hero .subtitle{color:var(--dim);margin-top:0.8rem;font-size:0.9rem;letter-spacing:2px}
+
+/* HERO */
+.hero{text-align:center;padding:5rem 1rem 2rem}
+.hero h1{font-size:2.4rem;font-weight:bold;letter-spacing:4px;background:linear-gradient(135deg,var(--cyan),var(--magenta));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:glow-pulse 3s ease-in-out infinite}
+.hero .subtitle{color:var(--dim);margin-top:0.5rem;font-size:0.85rem;letter-spacing:2px}
 @keyframes glow-pulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.3)}}
-.ticker-bar{background:var(--surface);border:1px solid rgba(0,240,255,0.15);border-radius:8px;padding:1rem;margin:2rem 0;overflow:hidden;position:relative;height:52px}
+
+/* STATUS BAR */
+.status-bar{display:flex;align-items:center;justify-content:center;gap:1rem;margin:1.5rem 0;flex-wrap:wrap}
+.status-badge{background:var(--surface);border:1px solid rgba(0,240,255,0.2);border-radius:20px;padding:0.4rem 1rem;font-size:0.75rem;display:flex;align-items:center;gap:0.4rem}
+.status-badge .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.status-badge .dot.online{background:var(--green);box-shadow:0 0 8px var(--green)}
+.status-badge .dot.offline{background:var(--yellow);box-shadow:0 0 8px var(--yellow)}
+.status-badge .dot.error{background:var(--red);box-shadow:0 0 8px var(--red)}
+
+/* TICKER */
+.ticker-bar{background:var(--surface);border:1px solid rgba(0,240,255,0.15);border-radius:8px;padding:0.8rem;margin:1.5rem 0;overflow:hidden;position:relative;height:48px}
 .ticker-track{display:flex;gap:3rem;animation:scroll-ticker 30s linear infinite;white-space:nowrap}
 .ticker-item{display:inline-flex;align-items:center;gap:0.5rem;font-size:0.8rem}
 .ticker-item .label{color:var(--dim)}.ticker-item .val{color:var(--cyan)}
 .ticker-item .chg.up{color:var(--green)}.ticker-item .chg.down{color:var(--red)}
-@keyframes scroll-ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}
+@keyframes scroll-ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* TABS */
+.tabs{display:flex;gap:0.5rem;margin:1.5rem 0;flex-wrap:wrap}
+.tab{background:var(--surface);border:1px solid rgba(0,240,255,0.15);border-radius:8px;padding:0.6rem 1.2rem;cursor:pointer;font-size:0.8rem;letter-spacing:1px;transition:all 0.3s;color:var(--dim)}
+.tab:hover{border-color:rgba(0,240,255,0.4);color:var(--text)}
+.tab.active{background:linear-gradient(135deg,rgba(0,240,255,0.15),rgba(255,0,170,0.15));border-color:var(--cyan);color:var(--cyan)}
+
+/* CARDS */
 .card{background:var(--surface);border:1px solid rgba(0,240,255,0.1);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;transition:all 0.3s;position:relative;overflow:hidden}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--magenta));opacity:0.6}
 .card:hover{border-color:rgba(0,240,255,0.3);box-shadow:var(--glow)}
-.card h2{color:var(--cyan);font-size:1.1rem;margin-bottom:1rem;letter-spacing:2px;display:flex;align-items:center;gap:0.5rem}
-.card h3{color:var(--magenta);font-size:0.95rem;margin:1rem 0 0.5rem;letter-spacing:1px}
+.card h2{color:var(--cyan);font-size:1.05rem;margin-bottom:0.8rem;letter-spacing:2px;display:flex;align-items:center;gap:0.5rem}
+.card h3{color:var(--magenta);font-size:0.9rem;margin:1rem 0 0.5rem;letter-spacing:1px}
+
+/* GRID */
 .grid{display:grid;gap:1.5rem;margin-bottom:1.5rem}
-.grid-2{grid-template-columns:repeat(auto-fit,minmax(450px,1fr))}
-.grid-3{grid-template-columns:repeat(auto-fit,minmax(350px,1fr))}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(400px,1fr))}
+
+/* FORMS */
 label{display:block;color:var(--dim);font-size:0.75rem;letter-spacing:1px;margin-bottom:0.3rem}
-input[type="number"],input[type="text"],select{background:var(--surface2);border:1px solid rgba(0,240,255,0.2);color:var(--text);padding:0.6rem 1rem;border-radius:6px;font-family:var(--font);font-size:0.9rem;width:100%;transition:border-color 0.3s}
-input:focus,select:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 10px rgba(0,240,255,0.2)}
-input[type="range"]{-webkit-appearance:none;width:100%;height:6px;background:var(--surface2);border-radius:3px;outline:none}
-input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--cyan);border-radius:50%;cursor:pointer;box-shadow:0 0 10px rgba(0,240,255,0.5)}
-.btn{background:linear-gradient(135deg,rgba(0,240,255,0.15),rgba(255,0,170,0.15));border:1px solid rgba(0,240,255,0.4);color:var(--cyan);padding:0.7rem 1.5rem;border-radius:6px;font-family:var(--font);font-size:0.85rem;cursor:pointer;letter-spacing:1px;transition:all 0.3s;text-transform:uppercase}
+input[type="number"],input[type="text"]{background:var(--surface2);border:1px solid rgba(0,240,255,0.2);color:var(--text);padding:0.6rem 1rem;border-radius:6px;font-family:var(--font);font-size:0.9rem;width:100%;transition:border-color 0.3s}
+input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 10px rgba(0,240,255,0.2)}
+
+/* BUTTONS */
+.btn{background:linear-gradient(135deg,rgba(0,240,255,0.15),rgba(255,0,170,0.15));border:1px solid rgba(0,240,255,0.4);color:var(--cyan);padding:0.6rem 1.3rem;border-radius:6px;font-family:var(--font);font-size:0.8rem;cursor:pointer;letter-spacing:1px;transition:all 0.3s;text-transform:uppercase}
 .btn:hover{background:linear-gradient(135deg,rgba(0,240,255,0.3),rgba(255,0,170,0.3));box-shadow:var(--glow)}
-.btn.active{background:linear-gradient(135deg,var(--cyan),var(--magenta));color:#000}
-.btn-sm{padding:0.4rem 0.8rem;font-size:0.75rem}
-.output{background:var(--surface2);border:1px solid rgba(0,240,255,0.1);border-radius:8px;padding:1rem;margin-top:1rem;font-size:0.85rem}
-.output .row{display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid rgba(255,255,255,0.05)}
-.output .row:last-child{border-bottom:none}
-.output .k{color:var(--dim)}.output .v{color:var(--cyan);font-weight:bold}
+.btn.active{background:linear-gradient(135deg,var(--cyan),var(--magenta));color:#000;border-color:var(--cyan)}
+.btn-sm{padding:0.35rem 0.7rem;font-size:0.7rem}
+
+/* TOOLTIP */
+.tooltip{position:relative;display:inline-block;cursor:help;border-bottom:1px dotted var(--dim)}
+.tooltip .tip-text{visibility:hidden;opacity:0;position:absolute;z-index:200;bottom:125%;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid rgba(0,240,255,0.3);border-radius:8px;padding:0.8rem 1rem;font-size:0.75rem;color:var(--text);width:max-content;max-width:280px;transition:opacity 0.2s,visibility 0.2s;pointer-events:none;line-height:1.5;box-shadow:0 4px 20px rgba(0,0,0,0.5)}
+.tooltip:hover .tip-text{visibility:visible;opacity:1}
+.tip-label{color:var(--cyan);font-weight:bold;display:block;margin-bottom:0.3rem;font-size:0.8rem}
+
+/* INFO BOX */
+.info-box{background:rgba(0,240,255,0.05);border:1px solid rgba(0,240,255,0.2);border-radius:8px;padding:1rem;margin:1rem 0;font-size:0.8rem;line-height:1.7}
+.info-box strong{color:var(--cyan)}
+.info-box .highlight{color:var(--yellow)}
+
+/* MARKET LIST */
+.market-list{max-height:400px;overflow-y:auto}
+.market-item{background:var(--surface2);border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:0.8rem;margin-bottom:0.5rem;cursor:pointer;transition:all 0.2s}
+.market-item:hover{border-color:rgba(0,240,255,0.3);background:rgba(0,240,255,0.03)}
+.market-item .m-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem}
+.market-item .ticker{color:var(--cyan);font-weight:bold;font-size:0.85rem}
+.market-item .m-title{color:var(--text);font-size:0.8rem;flex:1;margin:0 0.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.market-item .m-prices{display:flex;gap:1rem;font-size:0.75rem}
+.price-yes{color:var(--green)}.price-no{color:var(--red)}
+.edge{color:var(--cyan);font-weight:bold}
+
+/* TABLE */
 table{width:100%;border-collapse:collapse;font-size:0.8rem}
 th{color:var(--cyan);text-align:left;padding:0.5rem;border-bottom:1px solid rgba(0,240,255,0.2);letter-spacing:1px;font-size:0.7rem;text-transform:uppercase}
 td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.03)}
 tr:hover{background:rgba(0,240,255,0.05)}
-footer{text-align:center;padding:3rem 0;color:var(--dim);font-size:0.7rem;letter-spacing:2px;border-top:1px solid rgba(0,240,255,0.1);margin-top:3rem}
-@media(max-width:768px){.hero h1{font-size:1.8rem}.grid-2,.grid-3{grid-template-columns:1fr}.nav-links{display:none}}
+tr.clickable{cursor:pointer}
 
+/* OUTPUT */
+.output{background:var(--surface2);border:1px solid rgba(0,240,255,0.1);border-radius:8px;padding:1rem;margin-top:1rem;font-size:0.85rem}
+.output .row{display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.output .row:last-child{border-bottom:none}
+.output .k{color:var(--dim)}.output .v{color:var(--cyan);font-weight:bold}
+
+/* EXPLAINER */
+.explainer{background:linear-gradient(135deg,rgba(0,240,255,0.05),rgba(255,0,170,0.05));border:1px solid rgba(0,240,255,0.15);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
+.explainer h3{color:var(--cyan);font-size:0.95rem;margin-bottom:0.5rem}
+.explainer p{color:var(--dim);font-size:0.8rem;line-height:1.7}
+.explainer .example{background:var(--surface2);border-radius:6px;padding:0.8rem;margin-top:0.5rem;font-size:0.78rem}
+
+/* ARCH DIAGRAM */
+.arch-box{background:var(--surface2);border:2px solid;border-radius:8px;padding:0.8rem 1.5rem;text-align:center;width:100%;max-width:350px;font-size:0.85rem}
+.arch-arrow{color:var(--dim);font-size:1.2rem;text-align:center}
+
+/* FLOW STEP */
+.flow-step{background:var(--surface2);border:1px solid;border-radius:8px;padding:1rem;min-width:160px;flex:1;max-width:240px}
+.flow-step .step-title{font-size:0.85rem;margin-bottom:0.3rem}
+.flow-step .step-desc{color:var(--dim);font-size:0.72rem}
+
+/* CALC RESULT */
+.calc-result{background:var(--surface2);border-radius:8px;padding:0.8rem;text-align:center;min-width:120px}
+.calc-result .label{color:var(--dim);font-size:0.7rem;text-transform:uppercase;letter-spacing:1px}
+.calc-result .value{font-size:1.3rem;font-weight:bold}
+.calc-result .value.green{color:var(--green)}
+.calc-result .value.red{color:var(--red)}
+.calc-result .value.cyan{color:var(--cyan)}
+.calc-result .value.white{color:var(--text)}
+
+/* FOOTER */
+.footer{text-align:center;padding:2rem 0;color:var(--dim);font-size:0.7rem;letter-spacing:2px;border-top:1px solid rgba(0,240,255,0.1);margin-top:2rem}
+
+/* MOBILE */
+@media(max-width:768px){
+  .hero h1{font-size:1.6rem}
+  .grid-2{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .tabs{gap:0.3rem}
+  .tab{padding:0.5rem 0.8rem;font-size:0.7rem}
+}
 </style>
 </head>
 <body>
@@ -65,17 +148,39 @@ footer{text-align:center;padding:3rem 0;color:var(--dim);font-size:0.7rem;letter
 <div class="scanlines"></div>
 
 <nav>
-  <div class="nav-brand">⚡ KALSHI//EXPLORER</div>
+  <div class="nav-brand">&#9889; KALSHI//EXPLORER</div>
   <div class="nav-links">
-    <a href="#scanner">SCANNER</a><a href="#calculator">CALCULATOR</a><a href="#earnings">EARNINGS</a><a href="#architecture">ARCH</a><a href="#flowchart">API FLOW</a><a href="#bot">BOT</a>
+    <a href="#scanner">SCANNER</a>
+    <a href="#calculator">CALCULATOR</a>
+    <a href="#earnings">EARNINGS</a>
+    <a href="#architecture">ARCH</a>
+    <a href="#flowchart">API FLOW</a>
+    <a href="#bot">BOT</a>
   </div>
 </nav>
 
-<header>
+<div class="hero">
   <h1>KALSHI//PROBABILITY_EXPLORER</h1>
   <p class="subtitle">PREDICTION MARKET ANALYSIS // IMPLIED PROBABILITY ENGINE // BOT ARCHITECTURE</p>
-  <div style="margin-top:1.5rem"><span class="status" id="api-status"><span class="dot online"></span> API STATUS: CONNECTING...</span></div>
-</header>
+</div>
+
+<div class="status-bar">
+  <div class="status-badge" id="api-status">
+    <span class="dot online"></span>
+    <span id="status-text">API STATUS: CONNECTING...</span>
+    <span class="tooltip" style="margin-left:4px">
+      <span style="font-size:0.7rem;color:var(--dim)">?</span>
+      <span class="tip-text"><span class="tip-label">API Status</span>Shows whether live market data is being fetched from Kalshi's public API. Falls back to demo data if blocked by CORS.</span></span>
+    </span>
+  </div>
+  <div class="status-badge" id="market-count" style="display:none">
+    <span id="market-count-text">0 MARKETS</span>
+    <span class="tooltip" style="margin-left:4px">
+      <span style="font-size:0.7rem;color:var(--dim)">?</span>
+      <span class="tip-text"><span class="tip-label">Market Count</span>Number of active markets currently loaded. Higher count means more opportunities to find edges.</span></span>
+    </span>
+  </div>
+</div>
 
 <div class="ticker-bar"><div class="ticker-track" id="ticker-track"></div></div>
 
@@ -88,22 +193,46 @@ footer{text-align:center;padding:3rem 0;color:var(--dim);font-size:0.7rem;letter
   <div class="tab" data-section="bot">BOT DESIGN</div>
 </div>
 
-<!-- SCANNER -->
+<!-- ===== SCANNER ===== -->
 <section id="scanner" class="section">
-  <div class="card">
-    <h2>🔒 LIVE MARKET SCANNER</h2>
-    <p style="color:var(--dim);font-size:0.75rem;margin-bottom:1rem">Real-time data from Kalshi public API. No auth needed. Prices = implied probability (0-100 cents)</p>
-    <div style="display:flex;gap:0.8rem;flex-wrap:wrap;margin-bottom:1rem">
-      <button class="btn btn-sm" data-filter="all">ALL</button>
-      <button class="btn btn-sm" data-filter="open">OPEN</button>
-      <input type="text" id="scanner-search" placeholder="SEARCH..." style="min-width:200px;flex:1">
-      <button class="btn" id="btn-scan">⟳ SCAN</button>
+  <div class="explainer">
+    <h3>&#128161; What is Kalshi?</h3>
+    <p>Kalshi is a <strong>prediction market</strong> where you trade on the outcome of real-world events. Each market has a YES and NO price in cents (1-99). If you buy YES at 65&#162; and the event happens, you get $1.00 per contract. If not, you lose your 65&#162;.</p>
+    <div class="example">
+      <strong style="color:var(--cyan)">Example:</strong> "Dow Above 45000" &#8212; YES price is 12&#162;<br>
+      This means the market thinks there's a <span class="highlight">12% chance</span> the Dow closes above 45000.<br>
+      Buy 100 YES contracts at 12&#162; each = $12 invested. If Dow &gt; 45000, you get $100. Profit = $88.
     </div>
-    <div id="scanner-results" class="market-list"><div class="loading"><div class="spinner"></div> Click SCAN to load markets...</div></div>
   </div>
+
+  <div class="card">
+    <h2>
+      &#128274; LIVE MARKET SCANNER
+      <span class="tooltip">
+        <span style="font-size:0.7rem;color:var(--dim);border-bottom:1px dotted var(--dim)">what is this?</span>
+        <span class="tip-text"><span class="tip-label">Market Scanner</span>Scans Kalshi's public API for active markets. Each market is a real-world event you can trade on. Prices show the market's implied probability (0-100%). Click any market to see full details.</span></span>
+      </span>
+    </h2>
+    <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center">
+      <button class="btn btn-sm" id="btn-all" data-filter="all">ALL</button>
+      <button class="btn btn-sm" id="btn-open" data-filter="open">OPEN</button>
+      <input type="text" id="scanner-search" placeholder="SEARCH markets..." style="min-width:180px;flex:1">
+      <button class="btn" id="btn-scan">&#10227; SCAN</button>
+    </div>
+    <div id="scanner-results" class="market-list">
+      <div class="loading"><div class="spinner"></div> Click SCAN to load markets...</div>
+    </div>
+  </div>
+
   <div class="grid grid-2">
     <div class="card">
-      <h2>📊 TOP 10 BY CERTAINTY</h2>
+      <h2>
+        &#128202; TOP 10 BY EDGE
+        <span class="tooltip">
+          <span style="font-size:0.7rem;color:var(--dim);border-bottom:1px dotted var(--dim)">what is edge?</span>
+          <span class="tip-text"><span class="tip-label">Edge</span>The difference between YES and NO prices. A 90&#162; YES / 10&#162; NO market has an edge of 80&#162; &#8212; meaning the market is very confident. Small edges (like 5&#162;) mean the outcome is uncertain. High edge = high confidence, but lower profit potential per trade.</span></span>
+        </span>
+      </h2>
       <table id="top10-table">
         <thead><tr><th>TICKER</th><th>TITLE</th><th>YES</th><th>NO</th><th>EDGE</th></tr></thead>
         <tbody id="top10-body"><tr><td colspan="5" style="text-align:center;color:var(--dim)">Click SCAN to see results</td></tr></tbody>
@@ -111,110 +240,220 @@ footer{text-align:center;padding:3rem 0;color:var(--dim);font-size:0.7rem;letter
     </div>
     <div class="card">
       <div id="market-detail">
-        <h2>🎯 MARKET DETAIL</h2>
-        <p style="color:var(--dim)">Select a market to see details</p>
+        <h2>
+          &#127919; MARKET DETAIL
+          <span class="tooltip">
+            <span style="font-size:0.7rem;color:var(--dim);border-bottom:1px dotted var(--dim)">how to read</span>
+            <span class="tip-text"><span class="tip-label">Market Detail</span>Click any market in the scanner list or top 10 table to see full details here. The YES price is what you pay to buy a contract. If the event resolves YES, you get $1.00 per contract. The NO price works the same way for the opposite outcome.</span></span>
+          </span>
+        </h2>
+        <p style="color:var(--dim);font-size:0.8rem">Click a market to see details</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CALCULATOR -->
+<!-- ===== CALCULATOR ===== -->
 <section id="calculator" class="section" style="display:none">
+  <div class="explainer">
+    <h3>&#128161; Probability Calculator</h3>
+    <p>This tool shows you exactly what you'd earn at different buy prices and investment amounts. Kalshi contracts pay out $1.00 if you're right, $0 if you're wrong. The buy price (in cents) is the market's estimate of probability.</p>
+    <div class="example">
+      <strong style="color:var(--cyan)">How it works:</strong><br>
+      Buy price: 65&#162; &#8212; Invest $100 &#8212; You get 153 contracts ($100 / $0.65)<br>
+      If you win: 153 &times; $1.00 = $153 payout &#8212; Net profit = $53 &#8212; ROI = 53%<br>
+      If you lose: $0 payout &#8212; Net loss = $100
+    </div>
+  </div>
+
   <div class="card">
-    <h2>🧮 PROBABILITY CALCULATOR</h2>
+    <h2>
+      &#128183; PROBABILITY CALCULATOR
+      <span class="tooltip">
+        <span style="font-size:0.7rem;color:var(--dim);border-bottom:1px dotted var(--dim)">how to use</span>
+        <span class="tip-text"><span class="tip-label">Calculator</span>Enter the market's YES price (1-99 cents) and how much you want to invest. The calculator shows your potential profit, ROI, and monthly/annual projections assuming you make this trade 4x per month.</span></span>
+      </span>
+    </h2>
     <div class="grid grid-2">
       <div>
-        <label style="color:var(--dim);font-size:0.8rem">BUY.PRICE (cents)</label>
-        <input type="number" id="calc-buy" class="form-input" placeholder="e.g. 65" min="1" max="99" style="width:100%">
-        <label style="color:var(--dim);font-size:0.8rem;margin-top:0.8rem">INVESTMENT ($)</label>
-        <input type="number" id="calc-invest" class="form-input" placeholder="e.g. 100" min="1" style="width:100%">
+        <label>BUY PRICE (cents)
+          <span class="tooltip" style="margin-left:4px">
+            <span style="font-size:0.65rem;color:var(--dim)">?</span>
+            <span class="tip-text"><span class="tip-label">Buy Price</span>The price shown on Kalshi for YES. 65&#162; means 65% implied probability. Higher price = more likely but less profit.</span></span>
+          </span>
+        </label>
+        <input type="number" id="calc-buy" placeholder="e.g. 65" min="1" max="99" style="width:100%">
+        <label style="margin-top:0.8rem">INVESTMENT ($)
+          <span class="tooltip" style="margin-left:4px">
+            <span style="font-size:0.65rem;color:var(--dim)">?</span>
+            <span class="tip-text"><span class="tip-label">Investment</span>Total dollar amount you want to spend. Each contract costs (buy price / 100). $100 at 65&#162; = 153 contracts.</span></span>
+          </span>
+        </label>
+        <input type="number" id="calc-invest" placeholder="e.g. 100" min="1" style="width:100%">
         <button class="btn" id="calc-btn" style="margin-top:1rem;width:100%">CALCULATE</button>
       </div>
-      <div id="calc-results" style="display:flex;flex-direction:column;gap:0.5rem;justify-content:center">
-        <p style="color:var(--dim)">Enter values and click Calculate</p>
+      <div id="calc-results" style="display:flex;flex-wrap:wrap;gap:0.8rem;justify-content:center;align-items:flex-start">
+        <p style="color:var(--dim);width:100%;text-align:center">Enter values and click Calculate</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- EARNINGS -->
+<!-- ===== EARNINGS ===== -->
 <section id="earnings" class="section" style="display:none">
+  <div class="explainer">
+    <h3>&#128161; Earnings Projections</h3>
+    <p>This shows your potential earnings at different probability levels, assuming you invest $100 per trade and make 4 trades per month. The chart helps you visualize which probability ranges offer the best risk/reward.</p>
+    <div class="example">
+      <strong style="color:var(--cyan)">Reading the chart:</strong><br>
+      A market with 70&#162; YES has 30&#162; NO. If you buy NO at 30&#162;:<br>
+      Win rate: 30% of the time you win $0.70 per $0.30 invested (133% ROI)<br>
+      Loss rate: 70% of the time you lose your $0.30<br>
+      Expected value per trade: (0.30 &times; $0.70) - (0.70 &times; $0.30) = $0
+    </div>
+  </div>
+
   <div class="card">
-    <h2>💰 EARNINGS PROJECTIONS</h2>
-    <p style="color:var(--dim);font-size:0.75rem;margin-bottom:1rem">Projected monthly returns at different probability levels</p>
-    <div id="earnings-chart-container" style="position:relative;height:300px">
+    <h2>
+      &#128176; EARNINGS PROJECTIONS
+      <span class="tooltip">
+        <span style="font-size:0.7rem;color:var(--dim);border-bottom:1px dotted var(--dim)">what am I seeing?</span>
+        <span class="tip-text"><span class="tip-label">Earnings Chart</span>Shows projected monthly profit at each probability level with a $100 investment. Green bars = profitable range. The sweet spot is usually 55-75&#162; where you get good ROI with reasonable win rate.</span></span>
+      </span>
+    </h2>
+    <div style="position:relative;height:300px">
       <canvas id="earnings-chart"></canvas>
     </div>
   </div>
-  <div class="card" style="margin-top:1rem">
-    <h2>📈 PROJECTION TABLE</h2>
+  <div class="card">
+    <h2>&#128200; PROJECTION TABLE</h2>
     <table id="earnings-table">
-      <thead><tr><th>PROBABILITY</th><th>INVESTMENT</th><th>MONTHLY PROFIT</th><th>ANNUAL PROFIT</th><th>ROI</th></tr></thead>
+      <thead><tr><th>BUY PRICE</th><th>INVEST</th><th>IF WIN</th><th>ROI</th><th>MO (4x)</th><th>ANNUAL (48x)</th></tr></thead>
       <tbody id="earnings-body"></tbody>
     </table>
   </div>
 </section>
 
-<!-- ARCHITECTURE -->
+<!-- ===== ARCHITECTURE ===== -->
 <section id="architecture" class="section" style="display:none">
-  <div class="card">
-    <h2>🏗️ SYSTEM ARCHITECTURE</h2>
-    <div id="arch-diagram" style="width:100%;overflow-x:auto"></div>
+  <div class="explainer">
+    <h3>&#128161; System Architecture</h3>
+    <p>This tool is built as a client-side web app that connects to Kalshi's public API. Here's how the data flows from the exchange to your screen.</p>
   </div>
+
+  <div class="card">
+    <h2>
+      &#127970; DATA PIPELINE
+      <span class="tooltip">
+        <span style="font-size:0.7rem;color:var(--dim);border-bottom:1px dotted var(--dim)">how it works</span>
+        <span class="tip-text"><span class="tip-label">Data Pipeline</span>Markets flow from Kalshi's API through a CORS proxy (since browsers block direct cross-origin requests), get parsed into a standard format, analyzed for edge/opportunity, and rendered in the UI. When the API is blocked, demo data is used instead.</span></span>
+      </span>
+    </h2>
+    <div id="arch-diagram" style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;padding:1rem"></div>
+  </div>
+
   <div class="grid grid-2" style="margin-top:1rem">
     <div class="card">
-      <h2>🧠 ANALYSIS ENGINE</h2>
-      <ul style="color:var(--text);line-height:1.8">
-        <li>Implied probability extraction from market prices</li>
-        <li>Edge calculation: market price vs model price</li>
-        <li>Volume-weighted confidence scoring</li>
-        <li>Real-time market microstructure analysis</li>
-        <li>Historical price movement tracking</li>
+      <h2>
+        &#129504; ANALYSIS ENGINE
+        <span class="tooltip">
+          <span style="font-size:0.7rem;color:var(--dim);border-bottom:1px dotted var(--dim)">what it does</span>
+          <span class="tip-text"><span class="tip-label">Analysis Engine</span>Processes raw market data to find trading opportunities. Calculates implied probability, edge, volume-weighted confidence, and market microstructure signals.</span></span>
+        </span>
+      </h2>
+      <ul style="color:var(--text);line-height:1.8;font-size:0.8rem">
+        <li><strong style="color:var(--cyan)">&#8226;</strong> Implied probability from prices</li>
+        <li><strong style="color:var(--cyan)">&#8226;</strong> Edge: |YES - NO| = confidence</li>
+        <li><strong style="color:var(--cyan)">&#8226;</strong> Volume-weighted scoring</li>
+        <li><strong style="color:var(--cyan)">&#8226;</strong> Market microstructure analysis</li>
+        <li><strong style="color:var(--cyan)">&#8226;</strong> Historical price tracking</li>
       </ul>
     </div>
     <div class="card">
-      <h2>📡 DATA PIPELINE</h2>
-      <ul style="color:var(--text);line-height:1.8">
-        <li>Kalshi REST API (public, no auth)</li>
-        <li>CORS proxy relay for browser access</li>
-        <li>Client-side caching (5-min TTL)</li>
-        <li>WebSocket for real-time updates</li>
-        <li>Fallback to demo data when API blocked</li>
+      <h2>
+        &#128225; API &amp; CACHING
+        <span class="tooltip">
+          <span style="font-size:0.7rem;color:var(--dim);border-bottom:1px dotted var(--dim)">why CORS?</span>
+          <span class="tip-text"><span class="tip-label">CORS</span>Cross-Origin Resource Sharing. Browsers block requests to external APIs unless the server allows it. Kalshi's API doesn't set CORS headers for browsers, so we use a proxy relay. The tool also caches data for 5 minutes to reduce API calls.</span></span>
+        </span>
+      </h2>
+      <ul style="color:var(--text);line-height:1.8;font-size:0.8rem">
+        <li><strong style="color:var(--magenta)">&#8226;</strong> Kalshi REST API (public)</li>
+        <li><strong style="color:var(--magenta)">&#8226;</strong> CORS proxy relay</li>
+        <li><strong style="color:var(--magenta)">&#8226;</strong> 5-min client cache</li>
+        <li><strong style="color:var(--magenta)">&#8226;</strong> WebSocket for live updates</li>
+        <li><strong style="color:var(--magenta)">&#8226;</strong> Demo data fallback</li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- API FLOW -->
+<!-- ===== API FLOW ===== -->
 <section id="flowchart" class="section" style="display:none">
+  <div class="explainer">
+    <h3>&#128161; API Request Flow</h3>
+    <p>When you click SCAN, here's exactly what happens behind the scenes. Understanding this helps you build your own trading tools.</p>
+  </div>
+
   <div class="card">
-    <h2>🔄 API FLOW</h2>
-    <div id="flowchart-container" style="width:100%;overflow-x:auto"></div>
+    <h2>
+      &#128260; REQUEST FLOW
+      <span class="tooltip">
+        <span style="font-size:0.7rem;color:var(--dim);border-bottom:1px dotted var(--dim)">try it yourself</span>
+        <span class="tip-text"><span class="tip-label">API Flow</span>You can replicate this flow yourself! Open your browser's DevTools (F12), go to the Network tab, and click SCAN. Watch the actual HTTP request and response.</span></span>
+      </span>
+    </h2>
+    <div id="flowchart-container" style="display:flex;flex-wrap:wrap;gap:0.8rem;justify-content:center;padding:1rem"></div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <h2>&#128221; API ENDPOINTS</h2>
+    <div style="font-size:0.78rem;color:var(--dim);line-height:1.8">
+      <strong style="color:var(--cyan)">GET /v2/markets</strong> &#8212; List all markets<br>
+      <strong style="color:var(--cyan)">GET /v2/markets/{ticker}</strong> &#8212; Single market detail<br>
+      <strong style="color:var(--cyan)">GET /v2/events</strong> &#8212; List all events<br>
+      <strong style="color:var(--cyan)">GET /v2/events/{event_id}/markets</strong> &#8212; Markets for an event<br><br>
+      <strong style="color:var(--magenta)">Base URL:</strong> https://external-api.kalshi.com<br>
+      <strong style="color:var(--magenta)">Auth:</strong> None required (public API)<br>
+      <strong style="color:var(--magenta)">Rate limit:</strong> ~100 req/min
+    </div>
   </div>
 </section>
 
-<!-- BOT DESIGN -->
+<!-- ===== BOT DESIGN ===== -->
 <section id="bot" class="section" style="display:none">
+  <div class="explainer">
+    <h3>&#128161; Discord Bot Design</h3>
+    <p>This explorer can be extended into a Discord bot that scans markets and sends alerts. Here's the planned command structure and features.</p>
+  </div>
+
   <div class="card">
-    <h2>🤖 DISCORD BOT DESIGN</h2>
+    <h2>
+      &#129302; DISCORD BOT
+      <span class="tooltip">
+        <span style="font-size:0.7rem;color:var(--dim);border-bottom:1px dotted var(--dim)">future feature</span>
+        <span class="tip-text"><span class="tip-label">Discord Bot</span>This section shows the planned bot design. The bot would connect to Discord, scan Kalshi markets on command, and send alerts when it finds high-edge opportunities.</span></span>
+      </span>
+    </h2>
     <div class="grid grid-2">
       <div>
-        <h3 style="color:var(--cyan);margin-bottom:0.5rem">Command Structure</h3>
-<pre style="color:var(--dim);font-size:0.75rem;background:var(--darker);padding:1rem;border-radius:4px;overflow-x:auto">
-/kalshi scan [topic]   - Scan markets
-/kalshi detail &lt;ticker&gt; - Market detail  
-/kalshi calc &lt;prob&gt; &lt;invest&gt;
-/kalshi earnings [mo]   - Projections
+        <h3 style="color:var(--cyan);margin-bottom:0.5rem">Commands</h3>
+<pre style="color:var(--dim);font-size:0.72rem;background:var(--surface2);padding:1rem;border-radius:4px;overflow-x:auto;line-height:1.6">
+/kalshi scan [topic]    Scan markets
+/kalshi detail &lt;ticker&gt;  Market detail
+/kalshi calc &lt;p&gt; &lt;$&gt;     Quick calc
+/kalshi top [n]         Top N by edge
+/kalshi alert &lt;edge&gt;    Set alert
 </pre>
       </div>
       <div>
         <h3 style="color:var(--cyan);margin-bottom:0.5rem">Features</h3>
-        <ul style="color:var(--text);line-height:1.8">
-          <li>Real-time market scanning</li>
-          <li>Probability edge calculator</li>
-          <li>Earnings projections</li>
-          <li>Portfolio tracking</li>
-          <li>Alert system for significant moves</li>
+        <ul style="color:var(--text);line-height:1.8;font-size:0.8rem">
+          <li><strong style="color:var(--green)">&#8226;</strong> Real-time market scanning</li>
+          <li><strong style="color:var(--green)">&#8226;</strong> Edge-based opportunity finder</li>
+          <li><strong style="color:var(--green)">&#8226;</strong> Earnings projections</li>
+          <li><strong style="color:var(--green)">&#8226;</strong> Portfolio tracking</li>
+          <li><strong style="color:var(--green)">&#8226;</strong> Alert system for big moves</li>
         </ul>
       </div>
     </div>

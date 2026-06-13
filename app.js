@@ -25,21 +25,10 @@
   var pts=new THREE.Points(g,m);
   s.add(pts);
   s.add(cam);
-  function draw(){
-    r.render(s,cam);
-    pts.rotation.y+=0.0003;
-    pts.rotation.x+=0.0001;
-  }
-  function loop(){
-    requestAnimationFrame(loop);
-    draw();
-  }
+  function draw(){r.render(s,cam);pts.rotation.y+=0.0003;pts.rotation.x+=0.0001;}
+  function loop(){requestAnimationFrame(loop);draw();}
   loop();
-  addEventListener('resize',function(){
-    r.setSize(innerWidth,innerHeight);
-    cam.aspect=innerWidth/innerHeight;
-    cam.updateProjectionMatrix();
-  });
+  addEventListener('resize',function(){r.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();});
 })();
 
 // ===== TABS =====
@@ -48,11 +37,12 @@ document.querySelectorAll('.tab').forEach(function(tab){
     var sec=this.getAttribute('data-section');
     document.querySelectorAll('.section').forEach(function(s){s.style.display='none';});
     document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
-    document.getElementById(sec).style.display='block';
+    var el=document.getElementById(sec);
+    el.style.display='block';
     this.classList.add('active');
-    if(sec==='earnings')drawEarningsChart();
-    if(sec==='architecture')drawArchDiagram();
-    if(sec==='flowchart')drawFlowChart();
+    if(sec==='earnings')setTimeout(function(){drawEarningsChart();},50);
+    if(sec==='architecture')setTimeout(function(){drawArchDiagram();},50);
+    if(sec==='flowchart')setTimeout(function(){drawFlowChart();},50);
   });
 });
 
@@ -67,32 +57,42 @@ var demoData=[
   {ticker:'KXDJIA',title:'Dow Above 45000',outcomePrices:'[12,88]',volume:95000000,status:'open'},
   {ticker:'KXNASDAQ',title:'Nasdaq Above 20000',outcomePrices:'[18,82]',volume:110000000,status:'open'},
   {ticker:'KXHOUSING',title:'Housing Market Crash 2026',outcomePrices:'[5,95]',volume:78000000,status:'open'},
-  {ticker:'KXGOLD',title:'Gold Above 3000',outcomePrices:'[28,72]',volume:34000000,status:'open'}
+  {ticker:'KXGOLD',title:'Gold Above 3000',outcomePrices:'[28,72]',volume:34000000,status:'open'},
+  {ticker:'KXUNEMP',title:'Unemployment Above 5%',outcomePrices:'[42,58]',volume:21000000,status:'open'},
+  {ticker:'KXRECESSION',title:'Recession in 2026',outcomePrices:'[30,70]',volume:45000000,status:'open'}
 ];
 
 var allMarkets=[];
+var currentFilter='all';
 
 // ===== SCAN MARKETS =====
 async function scanMarkets(){
-  var st=document.getElementById('api-status');
-  var res=document.getElementById('scanner-results');
-  st.innerHTML='<span class="dot online" style="background:var(--yellow)"></span> SCANNING...';
-  res.innerHTML='<div class="loading"><div class="spinner"></div> Fetching markets...</div>';
+  var st=document.getElementById('status-text');
+  var mc=document.getElementById('market-count');
+  st.textContent='SCANNING...';
+  document.getElementById('api-status').querySelector('.dot').className='dot offline';
+  document.getElementById('scanner-results').innerHTML='<div class="loading"><div class="spinner"></div>Fetching markets...</div>';
 
   try{
     var resp=await fetch('https://external-api.kalshi.com/v2/markets?limit=50&active=true');
     var data=await resp.json();
     if(data && data.markets && data.markets.length>0){
       allMarkets=data.markets;
-      st.innerHTML='<span class="dot online"></span> LIVE - '+allMarkets.length+' MARKETS';
+      st.textContent='LIVE - '+allMarkets.length+' MARKETS';
+      document.getElementById('api-status').querySelector('.dot').className='dot online';
+      mc.style.display='inline-flex';
+      document.getElementById('market-count-text').textContent=allMarkets.length+' MARKETS';
     }else{
       throw new Error('No data');
     }
   }catch(e){
     allMarkets=demoData;
-    st.innerHTML='<span class="dot offline"></span> DEMO DATA (API BLOCKED)';
+    st.textContent='DEMO DATA (API BLOCKED)';
+    document.getElementById('api-status').querySelector('.dot').className='dot offline';
+    mc.style.display='inline-flex';
+    document.getElementById('market-count-text').textContent=demoData.length+' DEMO';
   }
-  displayResults(allMarkets);
+  applyFilter();
 }
 
 function parsePrices(p){
@@ -111,45 +111,78 @@ function formatVol(v){
   return v.toString();
 }
 
+// ===== FILTERS =====
+function applyFilter(){
+  var filtered=allMarkets;
+  var q=document.getElementById('scanner-search').value.toLowerCase().trim();
+  if(currentFilter==='open'){
+    filtered=filtered.filter(function(m){return m.status==='open';});
+  }
+  if(q){
+    filtered=filtered.filter(function(m){
+      return (m.ticker||'').toLowerCase().indexOf(q)>=0 ||
+             (m.title||'').toLowerCase().indexOf(q)>=0;
+    });
+  }
+  displayResults(filtered);
+}
+
+document.getElementById('btn-scan').addEventListener('click',function(){scanMarkets();});
+document.getElementById('btn-all').addEventListener('click',function(){
+  currentFilter='all';
+  document.getElementById('btn-all').classList.add('active');
+  document.getElementById('btn-open').classList.remove('active');
+  applyFilter();
+});
+document.getElementById('btn-open').addEventListener('click',function(){
+  currentFilter='open';
+  document.getElementById('btn-open').classList.add('active');
+  document.getElementById('btn-all').classList.remove('active');
+  applyFilter();
+});
+document.getElementById('scanner-search').addEventListener('input',function(){applyFilter();});
+
 function displayResults(markets){
   var res=document.getElementById('scanner-results');
   var tbody=document.getElementById('top10-body');
   tbody.innerHTML='';
-
-  // Sort by edge (highest first)
+  if(markets.length===0){
+    res.innerHTML='<p style="color:var(--dim);text-align:center;padding:2rem">No markets match your filter</p>';
+    tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--dim)">No results</td></tr>';
+    return;
+  }
   var sorted=markets.slice().sort(function(a,b){
     var pa=parsePrices(a.outcomePrices);
     var pb=parsePrices(b.outcomePrices);
     return Math.abs(pb[0]-pb[1])-Math.abs(pa[0]-pa[1]);
   });
-
-  // Show top 10 in table
   var top10=sorted.slice(0,10);
   top10.forEach(function(mk){
     var tr=document.createElement('tr');
+    tr.className='clickable';
     var prices=parsePrices(mk.outcomePrices);
     var edge=Math.abs(prices[0]-prices[1]);
-    tr.innerHTML='<td>'+mk.ticker+'</td><td>'+mk.title+'</td><td style="color:'+(prices[0]>=50?'var(--green)':'var(--red)')+'">'+prices[0]+'¢</td><td style="color:'+(prices[1]>=50?'var(--green)':'var(--red)')+'">'+prices[1]+'¢</td><td style="color:var(--cyan)">'+edge+'¢</td>';
-    tr.style.cursor='pointer';
+    var yesColor=prices[0]>=50?'var(--green)':'var(--red)';
+    var noColor=prices[1]>=50?'var(--green)':'var(--red)';
+    tr.innerHTML='<td>'+mk.ticker+'</td><td>'+mk.title+'</td><td style="color:'+yesColor+'">'+prices[0]+'&#162;</td><td style="color:'+noColor+'">'+prices[1]+'&#162;</td><td style="color:var(--cyan)">'+edge+'&#162;</td>';
     tr.addEventListener('click',function(){showDetail(mk);});
     tbody.appendChild(tr);
   });
-
-  // Show all in results
   var html='';
   sorted.forEach(function(mk){
     var prices=parsePrices(mk.outcomePrices);
     var edge=Math.abs(prices[0]-prices[1]);
+    var yesColor=prices[0]>=50?'var(--green)':'var(--red)';
+    var noColor=prices[1]>=50?'var(--green)':'var(--red)';
     html+='<div class="market-item" data-ticker="'+mk.ticker+'">';
-    html+='<div class="market-header"><span class="ticker">'+mk.ticker+'</span><span class="title">'+mk.title+'</span></div>';
-    html+='<div class="market-prices"><span class="price-yes" style="color:'+(prices[0]>=50?'var(--green)':'var(--red)')+'">YES '+prices[0]+'¢</span>';
-    html+='<span class="price-no" style="color:'+(prices[1]>=50?'var(--green)':'var(--red)')+'">NO '+prices[1]+'¢</span>';
-    html+='<span class="edge" style="color:var(--cyan)">EDGE '+edge+'¢</span></div>';
-    html+='</div>';
+    html+='<div class="m-header"><span class="ticker">'+mk.ticker+'</span><span class="m-title">'+mk.title+'</span></div>';
+    html+='<div class="m-prices">';
+    html+='<span class="price-yes" style="color:'+yesColor+'">YES '+prices[0]+'&#162;</span>';
+    html+='<span class="price-no" style="color:'+noColor+'">NO '+prices[1]+'&#162;</span>';
+    html+='<span class="edge">EDGE '+edge+'&#162;</span>';
+    html+='</div></div>';
   });
   res.innerHTML=html;
-
-  // Add click handlers
   res.querySelectorAll('.market-item').forEach(function(item){
     item.addEventListener('click',function(){
       var t=this.getAttribute('data-ticker');
@@ -164,15 +197,19 @@ function showDetail(mk){
   var prices=parsePrices(mk.outcomePrices);
   var edge=Math.abs(prices[0]-prices[1]);
   var vol=formatVol(mk.volume);
-  d.innerHTML='<h2>🎯 '+mk.ticker+'</h2>';
-  d.innerHTML+='<p style="font-size:1.1rem;margin-bottom:0.5rem">'+mk.title+'</p>';
-  d.innerHTML+='<p style="color:var(--dim);margin-bottom:1rem">Status: <span style="color:'+(mk.status==='open'?'var(--green)':'var(--red)')+'">'+mk.status.toUpperCase()+'</span></p>';
-  d.innerHTML+='<div class="grid grid-2" style="gap:0.5rem">';
-  d.innerHTML+='<div><span style="color:var(--dim);font-size:0.8rem">YES</span><br><span style="font-size:1.5rem;color:'+(prices[0]>=50?'var(--green)':'var(--red)')+'">'+prices[0]+'¢</span></div>';
-  d.innerHTML+='<div><span style="color:var(--dim);font-size:0.8rem">NO</span><br><span style="font-size:1.5rem;color:'+(prices[1]>=50?'var(--green)':'var(--red)')+'">'+prices[1]+'¢</span></div>';
-  d.innerHTML+='<div><span style="color:var(--dim);font-size:0.8rem">EDGE</span><br><span style="font-size:1.5rem;color:var(--cyan)">'+edge+'¢</span></div>';
-  d.innerHTML+='<div><span style="color:var(--dim);font-size:0.8rem">VOLUME</span><br><span style="font-size:1.5rem;color:var(--text)">'+vol+'</span></div>';
+  var yesColor=prices[0]>=50?'var(--green)':'var(--red)';
+  var noColor=prices[1]>=50?'var(--green)':'var(--red)';
+  var statusColor=mk.status==='open'?'var(--green)':'var(--red)';
+  d.innerHTML='<h2>&#127919; '+mk.ticker+'</h2>';
+  d.innerHTML+='<p style="font-size:1rem;margin-bottom:0.3rem">'+mk.title+'</p>';
+  d.innerHTML+='<p style="color:var(--dim);margin-bottom:1rem;font-size:0.8rem">Status: <span style="color:'+statusColor+'">'+mk.status.toUpperCase()+'</span></p>';
+  d.innerHTML+='<div class="grid grid-2" style="gap:0.8rem">';
+  d.innerHTML+='<div class="calc-result"><div class="label">YES</div><div class="value" style="color:'+yesColor+'">'+prices[0]+'&#162;</div></div>';
+  d.innerHTML+='<div class="calc-result"><div class="label">NO</div><div class="value" style="color:'+noColor+'">'+prices[1]+'&#162;</div></div>';
+  d.innerHTML+='<div class="calc-result"><div class="label">EDGE</div><div class="value cyan">'+edge+'&#162;</div></div>';
+  d.innerHTML+='<div class="calc-result"><div class="label">VOLUME</div><div class="value white">'+vol+'</div></div>';
   d.innerHTML+='</div>';
+  d.innerHTML+='<div class="info-box" style="margin-top:1rem"><strong>How to trade:</strong> Buy YES at '+prices[0]+'&#162; if you think this event is more likely than '+(prices[0])+'%. Buy NO at '+prices[1]+'&#162; if you think it is less likely. Each contract pays $1.00 if you are right.</div>';
 }
 
 // ===== CALCULATOR =====
@@ -181,26 +218,22 @@ document.getElementById('calc-btn').addEventListener('click',function(){
   var invest=parseFloat(document.getElementById('calc-invest').value);
   var res=document.getElementById('calc-results');
   if(isNaN(buy)||isNaN(invest)||buy<1||buy>99||invest<1){
-    res.innerHTML='<p style="color:var(--red)">Please enter valid values (buy: 1-99, invest: >0)</p>';
+    res.innerHTML='<p style="color:var(--red);width:100%;text-align:center">Enter valid values (buy: 1-99, invest: >0)</p>';
     return;
   }
-  var payout=100;
-  var profitPerUnit=(payout-buy)/100;
   var units=Math.floor(invest/(buy/100));
   var totalCost=units*(buy/100);
-  var totalPayout=units*(payout/100);
-  var netProfit=totalPayout-totalCost;
+  var netProfit=units*(1-buy/100);
   var roi=(netProfit/totalCost*100).toFixed(1);
   var monthlyNet=netProfit*4;
   var annualNet=netProfit*48;
-  res.innerHTML='<div class="grid grid-2" style="gap:0.5rem">';
-  res.innerHTML+='<div><span style="color:var(--dim);font-size:0.8rem">UNITS</span><br><span style="font-size:1.3rem;color:var(--text)">'+units+'</span></div>';
-  res.innerHTML+='<div><span style="color:var(--dim);font-size:0.8rem">TOTAL COST</span><br><span style="font-size:1.3rem;color:var(--text)">$'+totalCost.toFixed(2)+'</span></div>';
-  res.innerHTML+='<div><span style="color:var(--dim);font-size:0.8rem">IF WIN</span><br><span style="font-size:1.3rem;color:var(--green)">+$'+netProfit.toFixed(2)+'</span></div>';
-  res.innerHTML+='<div><span style="color:var(--dim);font-size:0.8rem">ROI</span><br><span style="font-size:1.3rem;color:var(--cyan)">'+roi+'%</span></div>';
-  res.innerHTML+='<div><span style="color:var(--dim);font-size:0.8rem">MO NET (4x)</span><br><span style="font-size:1.3rem;color:var(--green)">+$'+monthlyNet.toFixed(2)+'</span></div>';
-  res.innerHTML+='<div><span style="color:var(--dim);font-size:0.8rem">ANNUAL (48x)</span><br><span style="font-size:1.3rem;color:var(--green)">+$'+annualNet.toFixed(2)+'</span></div>';
-  res.innerHTML+='</div>';
+  res.innerHTML='';
+  res.innerHTML+='<div class="calc-result"><div class="label">UNITS</div><div class="value white">'+units+'</div></div>';
+  res.innerHTML+='<div class="calc-result"><div class="label">TOTAL COST</div><div class="value white">$'+totalCost.toFixed(2)+'</div></div>';
+  res.innerHTML+='<div class="calc-result"><div class="label">IF WIN</div><div class="value green">+$'+netProfit.toFixed(2)+'</div></div>';
+  res.innerHTML+='<div class="calc-result"><div class="label">ROI</div><div class="value cyan">'+roi+'%</div></div>';
+  res.innerHTML+='<div class="calc-result"><div class="label">MO (4x)</div><div class="value green">+$'+monthlyNet.toFixed(2)+'</div></div>';
+  res.innerHTML+='<div class="calc-result"><div class="label">ANNUAL (48x)</div><div class="value green">+$'+annualNet.toFixed(2)+'</div></div>';
 });
 
 // ===== EARNINGS =====
@@ -209,26 +242,25 @@ function drawEarningsChart(){
   if(!ctx)return;
   var tbody=document.getElementById('earnings-body');
   tbody.innerHTML='';
-  var probs=[30,40,50,60,70,80,90];
+  var probs=[20,30,40,50,60,70,80,90];
   var invest=100;
-  var cols=['#ff6b6b','#ffa94d','#ffd43b','#69db7c','#38d9a9','#4dabf7','#9775fa'];
-  var labels=[];
-  var data=[];
+  var cols=['#ff6b6b','#ff8c42','#ffa94d','#ffd43b','#a9e34b','#69db7c','#38d9a9','#4dabf7'];
+  var labels=[],data=[];
   probs.forEach(function(p,i){
     labels.push(p+'%');
-    var profit=(100-p)/100*invest-p/100*invest;
+    var profit=(100-p)/100*invest;
     data.push(profit.toFixed(2));
     var tr=document.createElement('tr');
     var monthly=profit*4;
     var annual=profit*48;
     var roi=(profit/invest*100).toFixed(1);
-    tr.innerHTML='<td>'+p+'%</td><td>$'+invest+'</td><td style="color:'+(profit>=0?'var(--green)':'var(--red)')+'">+$'+profit.toFixed(2)+'</td><td style="color:'+(annual>=0?'var(--green)':'var(--red)')+'">+$'+annual.toFixed(2)+'</td><td style="color:var(--cyan)">'+roi+'%</td>';
+    tr.innerHTML='<td>'+p+'%</td><td>$'+invest+'</td><td style="color:var(--green)">+$'+profit.toFixed(2)+'</td><td style="color:var(--cyan)">'+roi+'%</td><td style="color:var(--green)">+$'+monthly.toFixed(2)+'</td><td style="color:var(--green)">+$'+annual.toFixed(2)+'</td>';
     tbody.appendChild(tr);
   });
   if(window.earningsChart)window.earningsChart.destroy();
   window.earningsChart=new Chart(ctx,{
     type:'bar',
-    data:{labels:labels,datasets:[{label:'Monthly Profit ($)',data:data,backgroundColor:cols,borderRadius:4}]},
+    data:{labels:labels,datasets:[{label:'Profit per $100 trade',data:data,backgroundColor:cols,borderRadius:4}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#8899aa'}},x:{grid:{display:false},ticks:{color:'#8899aa'}}}}
   });
 }
@@ -238,17 +270,17 @@ function drawArchDiagram(){
   var d=document.getElementById('arch-diagram');
   if(!d)return;
   var boxes=[
-    {label:'Kalshi API',color:'var(--cyan)',y:0},
-    {label:'CORS Proxy',color:'var(--purple)',y:1},
-    {label:'Data Parser',color:'var(--green)',y:2},
-    {label:'Analysis Engine',color:'var(--yellow)',y:3},
-    {label:'UI Renderer',color:'var(--cyan)',y:4},
-    {label:'Discord Bot',color:'var(--purple)',y:5}
+    {label:'Kalshi API',color:'var(--cyan)',icon:'&#128225;'},
+    {label:'CORS Proxy',color:'var(--purple)',icon:'&#128260;'},
+    {label:'Data Parser',color:'var(--green)',icon:'&#128202;'},
+    {label:'Analysis Engine',color:'var(--yellow)',icon:'&#129504;'},
+    {label:'UI Renderer',color:'var(--cyan)',icon:'&#128421;'},
+    {label:'Discord Bot',color:'var(--magenta)',icon:'&#129302;'}
   ];
-  var html='<div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;padding:1rem;min-width:300px">';
+  var html='<div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;padding:1rem;width:100%">';
   boxes.forEach(function(b,i){
-    html+='<div style="background:var(--darker);border:2px solid '+b.color+';border-radius:8px;padding:0.8rem 1.5rem;text-align:center;width:100%;max-width:350px;color:'+b.color+'">'+b.label+'</div>';
-    if(i<boxes.length-1)html+='<div style="color:var(--dim);font-size:1.2rem">↓</div>';
+    html+='<div class="arch-box" style="border-color:'+b.color+';color:'+b.color+'">'+b.icon+' '+b.label+'</div>';
+    if(i<boxes.length-1)html+='<div class="arch-arrow">&#8595;</div>';
   });
   html+='</div>';
   d.innerHTML=html;
@@ -259,17 +291,17 @@ function drawFlowChart(){
   var d=document.getElementById('flowchart-container');
   if(!d)return;
   var steps=[
-    {label:'1. Fetch Markets',desc:'GET /v2/markets?active=true',color:'var(--cyan)'},
-    {label:'2. Parse Prices',desc:'Extract outcomePrices array',color:'var(--green)'},
-    {label:'3. Calc Edge',desc:'|yesPrice - noPrice| = edge',color:'var(--yellow)'},
-    {label:'4. Sort & Filter',desc:'Sort by edge desc, filter volume',color:'var(--purple)'},
-    {label:'5. Display',desc:'Render table + detail view',color:'var(--cyan)'}
+    {label:'1. Fetch Markets',desc:'GET /v2/markets?limit=50&active=true',color:'var(--cyan)'},
+    {label:'2. Parse Response',desc:'Extract outcomePrices, volume, status',color:'var(--green)'},
+    {label:'3. Calculate Edge',desc:'|yesPrice - noPrice| = confidence score',color:'var(--yellow)'},
+    {label:'4. Sort & Filter',desc:'Sort by edge desc, apply user filters',color:'var(--purple)'},
+    {label:'5. Render UI',desc:'Build table, chart, and detail views',color:'var(--cyan)'}
   ];
-  var html='<div style="display:flex;flex-wrap:wrap;gap:0.8rem;justify-content:center;padding:1rem">';
+  var html='<div style="display:flex;flex-wrap:wrap;gap:0.8rem;justify-content:center;padding:1rem;width:100%">';
   steps.forEach(function(s){
-    html+='<div style="background:var(--darker);border:1px solid '+s.color+';border-radius:8px;padding:1rem;min-width:180px;flex:1;max-width:250px">';
-    html+='<div style="color:'+s.color+'">'+s.label+'</div>';
-    html+='<div style="color:var(--dim);font-size:0.8rem;margin-top:0.3rem">'+s.desc+'</div>';
+    html+='<div class="flow-step" style="border-color:'+s.color+'">';
+    html+='<div class="step-title" style="color:'+s.color+'">'+s.label+'</div>';
+    html+='<div class="step-desc">'+s.desc+'</div>';
     html+='</div>';
   });
   html+='</div>';
@@ -279,9 +311,9 @@ function drawFlowChart(){
 // ===== TICKER BAR =====
 function buildTicker(){
   var track=document.getElementById('ticker-track');
-  var items=demoData.map(function(m){return m.ticker+' '+parsePrices(m.outcomePrices)[0]+'¢';});
-  var text=items.join('  ◆  ');
-  track.innerHTML=text+'  ◆  '+text;
+  var items=demoData.map(function(m){return '<span class="ticker-item"><span class="label">'+m.ticker+'</span> <span class="val">'+parsePrices(m.outcomePrices)[0]+'&#162;</span></span>';});
+  var text=items.join('  &#9670;  ');
+  track.innerHTML=text+'  &#9670;  '+text;
 }
 
 // ===== INIT =====
