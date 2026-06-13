@@ -199,7 +199,7 @@ function applyFilter(){
   var filtered=allMarkets;
   var q=document.getElementById('scanner-search').value.toLowerCase().trim();
   if(currentFilter==='open'){
-    filtered=filtered.filter(function(m){return m.status==='open';});
+    filtered=filtered.filter(function(m){return m.status==='open'||m.status==='active';});
   }
   if(q){
     filtered=filtered.filter(function(m){
@@ -235,15 +235,15 @@ function displayResults(markets){
     return;
   }
   var sorted=markets.slice().sort(function(a,b){
-    var pa=parsePrices(a.outcomePrices);
-    var pb=parsePrices(b.outcomePrices);
+    var pa=parsePrices(a);
+    var pb=parsePrices(b);
     return Math.abs(pb[0]-pb[1])-Math.abs(pa[0]-pa[1]);
   });
   var top10=sorted.slice(0,10);
   top10.forEach(function(mk){
     var tr=document.createElement('tr');
     tr.className='clickable';
-    var prices=parsePrices(mk.outcomePrices);
+    var prices=parsePrices(mk);
     var edge=Math.abs(prices[0]-prices[1]);
     var yesColor=prices[0]>=50?'var(--green)':'var(--red)';
     var noColor=prices[1]>=50?'var(--green)':'var(--red)';
@@ -253,7 +253,7 @@ function displayResults(markets){
   });
   var html='';
   sorted.forEach(function(mk){
-    var prices=parsePrices(mk.outcomePrices);
+    var prices=parsePrices(mk);
     var edge=Math.abs(prices[0]-prices[1]);
     var yesColor=prices[0]>=50?'var(--green)':'var(--red)';
     var noColor=prices[1]>=50?'var(--green)':'var(--red)';
@@ -277,12 +277,12 @@ function displayResults(markets){
 
 function showDetail(mk){
   var d=document.getElementById('market-detail');
-  var prices=parsePrices(mk.outcomePrices);
+  var prices=parsePrices(mk);
   var edge=Math.abs(prices[0]-prices[1]);
   var vol=formatVol(mk.volume);
   var yesColor=prices[0]>=50?'var(--green)':'var(--red)';
   var noColor=prices[1]>=50?'var(--green)':'var(--red)';
-  var statusColor=mk.status==='open'?'var(--green)':'var(--red)';
+  var statusColor=(mk.status==='open'||mk.status==='active')?'var(--green)':'var(--red)';
   d.innerHTML='<h2>&#127919; '+mk.ticker+'</h2>';
   d.innerHTML+='<p style="font-size:1rem;margin-bottom:0.3rem">'+mk.title+'</p>';
   d.innerHTML+='<p style="color:var(--dim);margin-bottom:1rem;font-size:0.8rem">Status: <span style="color:'+statusColor+'">'+mk.status.toUpperCase()+'</span></p>';
