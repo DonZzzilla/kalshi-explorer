@@ -62,8 +62,10 @@ A cyberpunk-themed prediction market analysis tool and implied probability engin
 | **EARNINGS** | Bar chart + table showing profit at prices from 20¢ to 90¢ |
 | **ARCHITECTURE** | Interactive data pipeline: API → Proxy → Parser → Analyzer → UI |
 | **API FLOW** | 5-step REST round-trip walkthrough with actual code snippets |
-| **BOT DESIGN** | Discord bot command spec and feature list |
-| **HERMES HUB** | 3 deployment scenarios + 5 alternative setups + quick-start guide |
+|| **BOT DESIGN** | Discord bot command spec and feature list |
+|| **HERMES HUB** | 3 deployment scenarios + 5 alternative setups + quick-start guide |
+|| **ECOLOGY** | Who actually makes money on prediction markets (insider traders, skilled winners, market makers) — based on academic research |
+|| **INSIDER TRACKING** | Complete guide: set up Hermes to monitor big names on social, interpret signals, and trade before the crowd |
 
 ---
 

@@ -262,6 +262,8 @@ body[data-tier="indepth"] .tier-badge{background:rgba(255,0,170,0.2);color:var(-
       <a data-section="flowchart">API FLOW</a>
       <a data-section="bot">BOT DESIGN</a>
       <a data-section="hub">HERMES HUB</a>
+      <a data-section="ecology">&#9878; ECOLOGY</a>
+      <a data-section="insider-tracking">INSIDER TRACKING</a>
     </div>
   </div>
 </nav>
@@ -269,7 +271,7 @@ body[data-tier="indepth"] .tier-badge{background:rgba(255,0,170,0.2);color:var(-
 <div class="content-wrapper">
 <div class="hero">
   <h1>KALSHI//PROBABILITY_EXPLORER</h1>
-  <p class="subtitle">PREDICTION MARKET ANALYSIS // IMPLIED PROBABILITY ENGINE // BOT ARCHITECTURE</p>
+  <p class="subtitle">PREDICTION MARKET ANALYSIS // IMPLIED PROBABILITY ENGINE // BOT ARCHITECTURE // SOCIAL INTELLIGENCE</p>
 </div>
 
 <div class="status-bar">
@@ -312,6 +314,8 @@ body[data-tier="indepth"] .tier-badge{background:rgba(255,0,170,0.2);color:var(-
   <div class="tab" data-section="flowchart">API FLOW</div>
   <div class="tab" data-section="bot">BOT DESIGN</div>
   <div class="tab" data-section="hub">HERMES HUB</div>
+  <div class="tab" data-section="ecology">&#9878; ECOLOGY</div>
+  <div class="tab" data-section="insider-tracking">INSIDER TRACKING</div>
 </div>
 
 <!-- ===== SCANNER ===== -->
@@ -997,6 +1001,643 @@ body[data-tier="indepth"] .tier-badge{background:rgba(255,0,170,0.2);color:var(-
       <li>Schedule it: <code>crontab -e</code> → <code>*/15 * * * * /usr/bin/python3 /home/donzzz/kalshi-bot/scan.py &gt;&gt; /home/donzzz/kalshi-bot/bot.log 2&gt;&amp;1</code></li>
       <li>Watch your Discord — first alert in 15 minutes &#128640;</li>
     </ol>
+  </div>
+</section>
+
+</section>
+
+<!-- ===== ECOLOGY ===== -->
+<section id="ecology" class="section" style="display:none">
+  <div class="explainer" data-explainer="ecology">
+    <h3>&#9878; The Prediction Market Ecology <span class="tier-badge" id="badge-ecology">TEENAGER</span></h3>
+    <p style="color:var(--yellow);font-size:0.85rem;margin-bottom:0.8rem;font-weight:bold">⚠️ Based on research from the video "The Dark Truth About Prediction Markets" — a deep-dive into who actually makes money on Kalshi and Polymarket.</p>
+
+    <div class="tier-block" data-tier="caveman">
+      <p>Most people lose money on prediction markets. A few smart people win most of the money. Big companies put in money so betting works. Some people cheat by knowing things before others. If you're going to play, you need to know which group you are.</p>
+    </div>
+
+    <div class="tier-block" data-tier="child">
+      <p>Imagine a big game where most players lose their tokens. A tiny group of really smart players wins almost everything. And some players have secret cheat codes — they know what's going to happen before everyone else. That's what prediction markets are really like. This page explains who wins, who loses, and why.</p>
+    </div>
+
+    <div class="tier-block" data-tier="teenager">
+      <p>Research shows that <strong>71% of Polymarket users lose money</strong>, and only 28% make any profit. But it's even more extreme than that — the top 1% of traders make 95% of all profits, and the top 0.1% make 74%. This page breaks down the three groups who actually make money, and why the average person is funding their wins.</p>
+    </div>
+
+    <div class="tier-block" data-tier="indepth">
+      <p>Academic studies of Polymarket activity (Nov 2022 – Sep 2025) reveal a power-law distribution of profits: ~71% of users are net losers, ~28% are net winners, but the profit concentration is extreme — top 1% capture 95% of profits, top 0.1% capture 74%. The profit/loss chart is logarithmic: each step on the Y-axis is 10×. On a linear scale the green winners bar nearly disappears. Three distinct winner groups exist: (1) insider traders with non-public information, (2) skilled winners (~3% of users, ~20% of profits) who trade broadly, react fast, and avoid behavioral biases, and (3) market makers (0.1% of accounts) who provide liquidity and extract spread from the losing majority. The "wisdom of crowds" that makes prediction markets accurate is actually produced almost entirely by group 2 — the remaining majority doesn't produce accuracy, it <em>funds</em> it.</p>
+    </div>
+  </div>
+
+  <!-- THE THREE WINNER GROUPS -->
+  <div class="card">
+    <h2>&#127942; The Three Groups Who Actually Make Money</h2>
+    <p style="color:var(--dim);font-size:0.78rem;margin-bottom:1rem">Everyone else is funding their wins. Click each group to expand.</p>
+
+    <div class="hub-scenario" data-hub-idx="20">
+      <div class="hub-title">&#128114; Group 1: Insider Traders</div>
+      <div class="hub-meta">
+        <span class="hub-footprint">Illegal-ish</span>
+        <span class="hub-footprint">Non-public info</span>
+        <span class="hub-footprint">$143M+ on Polymarket</span>
+      </div>
+      <div class="hub-summary">People with advance knowledge of events bet against those who don't. $50K on Taylor Swift's engagement. $400K+ on Maduro's capture. $1M+ on Google's search terms. Researchers found $143M in suspicious trades over 2 years.</div>
+      <div class="hub-expand">
+        <h4>How it works</h4>
+        <ul>
+          <li>Someone knows an event is about to happen (or has already happened but isn't public yet)</li>
+          <li>They place large bets on low-probability outcomes that are about to resolve</li>
+          <li>Example: an account made its first trade on "Maduro capture" just days before the event, placed $40K on contracts under 10¢, and stopped trading immediately after</li>
+          <li>Three major bets were placed <em>after</em> the capture happened but <em>before</em> the information went public</li>
+        </ul>
+        <h4>The research</h4>
+        <ul>
+          <li>Joshua & Moran Ofir analyzed 2 years of Polymarket activity for unusual behavior</li>
+          <li>Suspicious accounts made $143M between Feb 2024 and Feb 2026</li>
+          <li>That sounds like a lot, but it's less than 1% of Polymarket's total volume in that period</li>
+          <li>Insider trading is a massive issue but it's only one piece of the puzzle</li>
+        </ul>
+        <h4>Can you detect it?</h4>
+        <ul>
+          <li>Accounts that appear right before an event and vanish after</li>
+          <li>Large bets on very low-priced contracts (under 10¢)</li>
+          <li>Trades placed in the window between an event happening and it becoming public</li>
+          <li>This is where social intelligence and Hermes monitoring comes in — see the <strong>INSIDER TRACKING</strong> tab</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hub-scenario" data-hub-idx="21">
+      <div class="hub-title">&#129504; Group 2: Skilled Winners (The 3%)</div>
+      <div class="hub-meta">
+        <span class="hub-footprint">3% of users</span>
+        <span class="hub-footprint">20% of profits</span>
+        <span class="hub-footprint">The "smart money"</span>
+      </div>
+      <div class="hub-summary">A tiny group of skilled traders who trade broadly across many markets, react quickly to news, anticipate changes faster than others, and — crucially — avoid the behavioral biases that trap everyone else.</div>
+      <div class="hub-expand">
+        <h4>What they do better</h4>
+        <ul>
+          <li><strong>Trade broadly</strong> — across many kinds of markets, not just one niche</li>
+          <li><strong>React quickly to news</strong> — they're first to adjust positions when new information drops</li>
+          <li><strong>Anticipate future changes</strong> — they see what's coming before the crowd</li>
+          <li><strong>Avoid the "optimism tax"</strong> — they don't fall for the traps that catch average users</li>
+        </ul>
+        <h4>The "Optimism Tax" — what skilled winners avoid</h4>
+        <ul>
+          <li><strong>Over-betting on YES:</strong> YES is green and listed first. Design cues nudge people toward clicking it. Average users lose money this way.</li>
+          <li><strong>Overestimating low probabilities:</strong> Cheap long-shot bets (5¢, 10¢) feel like bargains but generally lose money. They're overpriced — a 10¢ bet wins less than 10% of the time.</li>
+          <li><strong>Ignoring expensive bets:</strong> A 90¢ bet wins more than 90% of the time (it's underpriced). But people avoid them because the profit per trade is small.</li>
+        </ul>
+        <h4>The key insight</h4>
+        <ul>
+          <li>Skilled winners are defined as much by what they <em>don't</em> do as what they do</li>
+          <li>They don't chase long shots. They don't over-bet YES. They don't let design cues influence their decisions.</li>
+          <li>They treat it like a math problem, not a feeling</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hub-scenario" data-hub-idx="22">
+      <div class="hub-title">&#127974; Group 3: Market Makers (The 0.1%)</div>
+      <div class="hub-meta">
+        <span class="hub-footprint">0.1% of accounts</span>
+        <span class="hub-footprint">Institutional</span>
+        <span class="hub-footprint">Billions deployed</span>
+      </div>
+      <div class="hub-summary">Big institutional trading firms pump billions into prediction markets so that when you want to place a bet, there's always someone on the other side. They're not betting — they're providing liquidity and extracting profit from every trade.</div>
+      <div class="hub-expand">
+        <h4>What market makers do</h4>
+        <ul>
+          <li>They provide the money that makes markets function — without them, there's no one to bet against</li>
+          <li>They take the other side of your trade and profit from the spread</li>
+          <li>Kalshi and Polymarket's business models depend on market makers</li>
+          <li>Market makers' profit comes directly from the losing majority of users</li>
+        </ul>
+        <h4>The paradox</h4>
+        <ul>
+          <li>Prediction markets say "We aren't the house" and "We don't win when you lose" — and that's technically true</li>
+          <li>But the house (market makers) <em>does</em> win when you lose</li>
+          <li>And the platforms need market makers to exist</li>
+          <li>So prediction markets are fundamentally dependent on users losing money</li>
+        </ul>
+        <h4>The researchers' conclusion</h4>
+        <ul>
+          <li>"Markets often fail because they don't have enough dumb money as opposed to not having enough smart money"</li>
+          <li>For the health of markets, it's necessary to have people who are new and still learning — and on average, they won't be good at it</li>
+          <li>The platforms' advertising is designed to make inexperienced people believe prediction markets are easy money</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE ACCURACY PARADOX -->
+  <div class="card" style="margin-top:1.5rem">
+    <h2>&#128203; The Accuracy Paradox: Who Makes Prediction Markets "True"?</h2>
+
+    <div class="tier-block" data-tier="caveman">
+      <p>Prediction markets are right because smart people make them right. Not because of everybody. The crowd isn't wise — the smart few are wise, and everybody else pays for it.</p>
+    </div>
+
+    <div class="tier-block" data-tier="child">
+      <p>You might think prediction markets are accurate because lots of people vote with their money — like a big smart crowd. But research shows it's actually just the tiny group of smart traders who make the prices accurate. Everyone else is just... there. Paying for the smart people to be right.</p>
+    </div>
+
+    <div class="tier-block" data-tier="teenager">
+      <p>The "wisdom of crowds" idea behind prediction markets isn't quite right. Research shows that prediction market accuracy is created by skilled winners (the 3%), not by the crowd. The majority of participants don't produce accuracy — they <em>fund</em> it. Smart money is what makes prediction markets accurate, and smart money only uses prediction markets because it can reliably feed off dumb money.</p>
+    </div>
+
+    <div class="tier-block" data-tier="indepth">
+      <p>A 2026 study of market makers on Kalshi found that prediction markets are reasonably accurate but not perfect: cheap bets (long shots) are generally overpriced (a 10¢ bet wins less than 10% of the time), expensive bets are underpriced (a 90¢ bet wins more than 90% of the time), and 50¢ bets are roughly fair. The key finding from a separate study: the "wisdom of crowds" premise is incorrect. Prediction market accuracy is produced by skilled winners (3% of users) who react quickly, anticipate changes, and trade broadly. The authors write: "The remaining majority of participants doesn't produce accuracy, it funds it." Smart money is what makes prediction markets accurate, and smart money only uses prediction markets because it can reliably feed off dumb money — as long as new dumb money keeps coming in.</p>
+    </div>
+
+    <div class="info-box" style="margin-top:1rem">
+      <strong style="color:var(--yellow)">The bottom line:</strong><br>
+      Prediction markets DO generate accurate predictions. And they DO make some people money. But the average user is neither making money nor helping generate accuracy. Every time you bet and lose, you're doing something valuable for the platform: you're funding the truth machine by incentivizing skilled traders (or someone with information you didn't have) to get a little richer — and in the process, producing an accurate forecast. The entire game is driven by a small group of pros. What these platforms are really selling the average person is a feeling: hope in tough economic times, and certainty in unpredictable times.
+    </div>
+  </div>
+
+  <!-- WHAT THIS MEANS FOR YOU -->
+  <div class="card" style="margin-top:1.5rem">
+    <h2>&#127919; What This Means If You Want to Trade</h2>
+
+    <div class="tier-block" data-tier="caveman">
+      <p>Don't be dumb money. If you're going to bet, be smart about it. Watch what the smart people watch. Don't fall for cheap traps. And know that the game is stacked against you.</p>
+    </div>
+
+    <div class="tier-block" data-tier="child">
+      <p>If you want to try prediction markets, you need to be honest with yourself: are you one of the smart 3%, or are you funding their wins? The best way to not be "dumb money" is to learn from the smart money — watch what they watch, follow the same information they follow, and don't fall for the cheap bets that trick most people.</p>
+    </div>
+
+    <div class="tier-block" data-tier="teenager">
+      <p>If you're going to trade on prediction markets, you need to act like the skilled 3%: trade broadly, react fast to news, avoid the optimism tax (don't over-bet YES, don't chase long shots), and understand that the game is stacked against you. The best edge you can have is <strong>information</strong> — knowing things before the market prices them in. That's what the INSIDER TRACKING tab is about: using Hermes Agent to follow the people who know things first.</p>
+    </div>
+
+    <div class="tier-block" data-tier="indepth">
+      <p>To be in the skilled 3% you need an information edge or a speed edge. Since you can't out-trade institutional market makers on speed, your edge must come from information — specifically, from being faster than the market at incorporating new information. This means monitoring the sources that move markets: government announcements, earnings reports, Fed speeches, geopolitical developments, and — critically — the social media accounts of people who are <em>inside</em> these events before they become public. The INSIDER TRACKING tab explains how to set up Hermes Agent to do exactly this: follow key figures, interpret their social media for trading signals, and position on prediction markets before the crowd catches on. This isn't illegal insider trading — it's public information analysis at machine speed. You're not trading on non-public information; you're trading on public information faster than humans can process it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== INSIDER TRACKING (inline summary) ===== -->
+<section id="insider-tracking" class="section" style="display:none">
+  <div class="explainer" data-explainer="insider-tracking">
+    <h3>&#128270; Social Intelligence & Secondary Insider Trading <span class="tier-badge" id="badge-insider-tracking">TEENAGER</span></h3>
+    <p style="color:var(--yellow);font-size:0.85rem;margin-bottom:0.8rem;font-weight:bold">🎯 How to set up Hermes Agent to follow big names, interpret socials, and trade prediction markets before the crowd.</p>
+
+    <div class="tier-block" data-tier="caveman">
+      <p>Smart people post things online before the news knows. A robot helper can watch what they say and tell you what to bet on before everyone else figures it out. This page teaches you how to build that robot.</p>
+    </div>
+
+    <div class="tier-block" data-tier="child">
+      <p>Important people — like politicians, CEOs, and news reporters — sometimes post hints about big events on social media before the rest of the world knows. If you had a robot that watched their posts 24/7 and told you "hey, this person just hinted that something big is coming," you could bet on it before the market catches up. That's what this page helps you build.</p>
+    </div>
+
+    <div class="tier-block" data-tier="teenager">
+      <p>This is a complete guide to setting up Hermes Agent as a social intelligence system: monitoring key figures on X/Twitter, parsing their posts for market-relevant signals, and translating those signals into prediction market trades. It's not illegal insider trading — it's analyzing public information faster than any human can. You're building a machine that reads the same tweets you do, but in milliseconds instead of hours.</p>
+    </div>
+
+    <div class="tier-block" data-tier="indepth">
+      <p>This guide covers the full pipeline: (1) identify "information source" accounts (Fed officials, congressional staffers, CEOs, journalists, crypto founders), (2) configure Hermes cron jobs to poll their social media via xurl/API at regular intervals, (3) use Hermes' LLM capabilities to classify posts by market relevance and sentiment, (4) map classified signals to specific Kalshi/Polymarket contracts, (5) calculate position sizing based on signal strength and market liquidity, (6) execute via Kalshi's authenticated API or alert you for manual confirmation. The system is designed to exploit the latency between public information being posted and the prediction market incorporating it — typically 15 minutes to 2 hours for non-viral posts.</p>
+    </div>
+  </div>
+
+  <!-- PHASE 1: IDENTIFY SOURCES -->
+  <div class="card">
+    <h2>&#128270; Phase 1: Identify Your Intelligence Sources</h2>
+    <p style="color:var(--dim);font-size:0.78rem;margin-bottom:1rem">The best signals come from people who are <em>inside</em> events before they're public. Click each category.</p>
+
+    <div class="hub-scenario" data-hub-idx="30">
+      <div class="hub-title">&#127970; Government & Politics</div>
+      <div class="hub-meta">
+        <span class="hub-footprint">Highest signal</span>
+        <span class="hub-footprint">Policy moves</span>
+        <span class="hub-footprint">Legislation</span>
+      </div>
+      <div class="hub-summary">Congressional members, White House staff, Fed officials, and agency heads often signal policy changes on social media before official announcements. A single tweet from a Fed governor can move rate prediction markets by 10+ cents.</div>
+      <div class="hub-expand">
+        <h4>Who to follow</h4>
+        <ul>
+          <li><strong>Federal Reserve officials:</strong> Regional Fed presidents (Williams, Barkin, Goolsbee, Kashkari) often signal rate policy shifts in speeches and interviews that hit social media before the wire services</li>
+          <li><strong>Congressional leadership:</strong> Members of the Senate Banking Committee, House Financial Services Committee — they know about regulatory action before it's public</li>
+          <li><strong>White House officials:</strong> Press secretaries, economic advisors (Yellen, Brainard types) — economic data leaks and policy hints</li>
+          <li><strong>SEC/CFTC commissioners:</strong> Crypto regulation signals, enforcement actions</li>
+        </ul>
+        <h4>What to watch for</h4>
+        <ul>
+          <li>Unexpected schedule changes ("posting from [unusual location]")</li>
+          <li>Vague hints about "important announcements"</li>
+          <li>Deleted tweets (use a monitoring service that captures these)</li>
+          <li>Family members posting about travel to significant locations</li>
+        </ul>
+        <h4>Kalshi markets affected</h4>
+        <ul>
+          <li>Fed rate decisions (KXRATE series)</li>
+          <li>Government shutdown / debt ceiling</li>
+          <li>Confirmation votes (Fed chairs, cabinet members)</li>
+          <li>CPI / jobs report numbers (if someone hints at the data)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hub-scenario" data-hub-idx="31">
+      <div class="hub-title">&#128188; Corporate & Finance</div>
+      <div class="hub-meta">
+        <span class="hub-footprint">Earnings</span>
+        <span class="hub-footprint">M&A signals</span>
+        <span class="hub-footprint">Product launches</span>
+      </div>
+      <div class="hub-summary">CEOs, CFOs, and founders often post hints about company performance, upcoming announcements, or market-moving events. Elon Musk's tweets move crypto markets. Jamie Dimon's posts move bank regulation markets.</div>
+      <div class="hub-expand">
+        <h4>Who to follow</h4>
+        <ul>
+          <li><strong>Tech CEOs:</strong> Musk, Zuckerberg, Nadella, Cook, Pichai — product launches, AI developments, regulatory stances</li>
+          <li><strong>Finance leaders:</strong> Dimon, Solomon, Gensler (when at SEC) — market sentiment, regulatory hints</li>
+          <li><strong>Crypto founders:</strong> Buterin, CZ (when active), Saylor — crypto regulation, adoption signals</li>
+          <li><strong>Activist investors:</strong> Ackman, Icahn, Loeb — position disclosures, company targets</li>
+        </ul>
+        <h4>What to watch for</h4>
+        <ul>
+          <li>Cryptic tweets that hint at announcements ("Something big is coming...")</li>
+          <li>Emoji patterns (🚀 for crypto, 📉 for bearish)</li>
+          <li>Engagement with specific companies or politicians</li>
+          <li>Changes in posting frequency or tone</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hub-scenario" data-hub-idx="32">
+      <div class="hub-title">&#127760; Geopolitics & World Events</div>
+      <div class="hub-meta">
+        <span class="hub-footprint">Conflicts</span>
+        <span class="hub-footprint">Elections</span>
+        <span class="hub-footprint">Trade</span>
+      </div>
+      <div class="hub-summary">Journalists, think tank analysts, and foreign officials often post real-time information about geopolitical events. War correspondents in Ukraine/Russia, Middle East analysts, and trade negotiators are goldmines for prediction market signals.</div>
+      <div class="hub-expand">
+        <h4>Who to follow</h4>
+        <ul>
+          <li><strong>War correspondents:</strong> Reporters on the ground in conflict zones — they know about military movements before official announcements</li>
+          <li><strong>Think tank analysts:</strong> CSIS, RAND, Brookings experts — policy analysis that precedes government action</li>
+          <li><strong>Foreign officials:</strong> Diplomats, trade representatives — deal signals, sanctions hints</li>
+          <li><strong>Intelligence community (retired):</strong> Former CIA/NSA officials often have better information than current ones can share</li>
+        </ul>
+        <h4>Kalshi markets affected</h4>
+        <ul>
+          <li>Will [country] take [action] by [date]?</li>
+          <li>Trade deal timelines</li>
+          <li>Sanctions and diplomatic recognition</li>
+          <li>Election outcomes in key countries</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 2: HERMES SETUP -->
+  <div class="card" style="margin-top:1.5rem">
+    <h2>&#129302; Phase 2: Hermes Agent Setup</h2>
+    <p style="color:var(--dim);font-size:0.78rem;margin-bottom:1rem">Configure Hermes to monitor, analyze, and act on social signals. Click each step.</p>
+
+    <div class="hub-scenario" data-hub-idx="40">
+      <div class="hub-title">&#9881; Step 1: Install xurl & Configure X API</div>
+      <div class="hub-expand">
+        <h4>Install xurl (X/Twitter CLI)</h4>
+        <pre style="color:var(--green);background:rgba(0,0,0,0.4);padding:1rem;border-radius:6px;font-size:0.72rem;overflow-x:auto;line-height:1.6">
+# Install xurl
+go install github.com/kivattt/xurl@latest
+
+# Or download binary directly
+wget https://github.com/kivattt/xurl/releases/latest/download/xurl-linux-arm64
+chmod +x xurl-linux-arm64
+sudo mv xurl-linux-arm64 /usr/local/bin/xurl
+
+# Authenticate with X (free tier works for reading)
+xurl auth login
+</pre>
+        <h4>Test it</h4>
+        <pre style="color:var(--green);background:rgba(0,0,0,0.4);padding:1rem;border-radius:6px;font-size:0.72rem;overflow-x:auto;line-height:1.6">
+# Get latest tweets from a user
+xurl user tweets --user fedchair --limit 5
+
+# Search for keywords
+xurl search "rate cut" --limit 10 --recent
+</pre>
+        <h4>Hermes skill needed</h4>
+        <ul>
+          <li>Load the <code>xurl</code> skill: <code>skill_view(name='social-media/xurl')</code></li>
+          <li>Or use the built-in <code>xurl</code> skill from the social-media category</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hub-scenario" data-hub-idx="41">
+      <div class="hub-title">&#128202; Step 2: Create the Monitor Script</div>
+      <div class="hub-expand">
+        <h4>social_monitor.py</h4>
+        <pre style="color:var(--green);background:rgba(0,0,0,0.4);padding:1rem;border-radius:6px;font-size:0.72rem;overflow-x:auto;line-height:1.6">
+#!/usr/bin/env python3
+"""Social intelligence monitor for prediction markets.
+Watches key accounts and flags market-relevant posts."""
+
+import subprocess, json, os, sqlite3, hashlib
+from datetime import datetime
+
+# Accounts to monitor: (username, category, relevance_keywords)
+SOURCES = [
+    # Fed & Economics
+    ("fedchair", "fed", ["rate", "inflation", "employment", "policy"]),
+    ("laborsec", "labor", ["jobs", "unemployment", "wages"]),
+    # Politics
+    ("speakerpelosi", "congress", ["vote", "bill", "shutdown", "debt"]),
+    ("senategovt", "congress", ["confirm", "nominee", "hearing"]),
+    # Geopolitics
+    ("natsecadvisor", "security", ["sanctions", "military", "deal", "talks"]),
+    # Crypto
+   ("cz_binance", "crypto", ["regulation", "exchange", "token", "defi"]),
+    ("saylor", "crypto", ["bitcoin", "btc", "sec", "etf"]),
+]
+
+DB_PATH = os.path.expanduser("~/kalshi-bot/social_intelligence.db")
+KALSHI_API = "https://external-api.kalshi.com/trade-api/v2/markets?status=open&limit=200"
+
+def init_db():
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("""CREATE TABLE IF NOT EXISTS posts (
+        id TEXT PRIMARY KEY,
+        username TEXT,
+        content TEXT,
+        posted_at TEXT,
+        category TEXT,
+        signal_strength REAL,
+        markets TEXT,
+        processed_at TEXT
+    )""")
+    conn.execute("""CREATE TABLE IF NOT EXISTS signals (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        post_id TEXT,
+        market_ticker TEXT,
+        signal_type TEXT,
+        confidence REAL,
+        action TEXT,
+        created_at TEXT
+    )""")
+    conn.commit()
+    return conn
+
+def fetch_latest_tweets(username, limit=10):
+    """Use xurl to fetch recent tweets from a user."""
+    try:
+        result = subprocess.run(
+            ["xurl", "user", "tweets", "--user", username, "--limit", str(limit)],
+            capture_output=True, text=True, timeout=30
+        )
+        if result.returncode == 0:
+            return json.loads(result.stdout)
+    except Exception as e:
+        print(f"Error fetching @{username}: {e}")
+    return []
+
+def analyze_post(post_text, keywords):
+    """Simple keyword-based signal detection. Replace with Hermes LLM for production."""
+    text_lower = post_text.lower()
+    matches = [kw for kw in keywords if kw in text_lower]
+    if not matches:
+        return 0.0, []
+    # Signal strength based on keyword matches and urgency words
+    urgency = ["breaking", "urgent", "just", "now", "announced", "confirmed", "exclusive"]
+    urgency_score = sum(1 for u in urgency if u in text_lower) * 0.2
+    strength = min(1.0, len(matches) * 0.3 + urgency_score)
+    return strength, matches
+
+def map_to_markets(category, keywords):
+    """Map a signal category to relevant Kalshi market tickers."""
+    # This is a simplified mapping — expand based on current active markets
+    MAPPING = {
+        "fed": ["KXRATE", "KXFED", "KXINFLATION", "KXCPI"],
+        "labor": ["KXUNEMP", "KXJOBS", "KXNONFARM"],
+        "congress": ["KXSHUTDOWN", "KXDEBTCEIL", "KXVOTE"],
+        "security": ["KXSANCTIONS", "KXTRADE", "KXWAR"],
+        "crypto": ["KXBTC", "KXETH", "KXCRYPTO", "KXSEC"],
+    }
+    return MAPPING.get(category, [])
+
+def run():
+    conn = conn = init_db()
+    total_signals = 0
+
+    for username, category, keywords in SOURCES:
+        tweets = fetch_latest_tweets(username)
+        for tweet in tweets:
+            tweet_id = tweet.get("id") or hashlib.md5(
+                tweet.get("text", "").encode()
+            ).hexdigest()
+
+            # Skip if already processed
+            existing = conn.execute(
+                "SELECT 1 FROM posts WHERE id=?", (tweet_id,)
+            ).fetchone()
+            if existing:
+                continue
+
+            content = tweet.get("text", "")
+            strength, matched = analyze_post(content, keywords)
+            markets = map_to_markets(category, matched)
+
+            conn.execute(
+                "INSERT OR IGNORE INTO posts VALUES (?,?,?,?,?,?,?,?)",
+                (tweet_id, username, content, tweet.get("created_at", ""),
+                 category, strength, json.dumps(markets), datetime.now().isoformat())
+            )
+
+            if strength > 0.3 and markets:
+                for ticker in markets:
+                    conn.execute(
+                        "INSERT INTO signals (post_id, market_ticker, signal_type, confidence, action, created_at) VALUES (?,?,?,?,?,?)",
+                        (tweet_id, ticker, category, strength, "WATCH", datetime.now().isoformat())
+                    )
+                    total_signals += 1
+                print(f"🚨 SIGNAL: @{username} → {markets} (strength: {strength:.1f})")
+                print(f"   Post: {content[:120]}...")
+
+    conn.commit()
+    conn.close()
+    print(f"\n[{datetime.now().strftime('%H:%M')}] Scan complete. {total_signals} new signals.")
+    return total_signals
+
+if __name__ == "__main__":
+    run()
+</pre>
+      </div>
+    </div>
+
+    <div class="hub-scenario" data-hub-idx="42">
+      <div class="hub-title">&#129504; Step 3: Add Hermes LLM Analysis</div>
+      <div class="hub-expand">
+        <p>The keyword approach above is a start, but the real edge comes from using Hermes' LLM to <em>understand</em> what a post actually means for markets. Here's how to layer that in:</p>
+        <h4>Hermes cron prompt for social analysis</h4>
+        <pre style="color:var(--green);background:rgba(0,0,0,0.4);padding:1rem;border-radius:6px;font-size:0.72rem;overflow-x:auto;line-height:1.6">
+# In Hermes, create a cron job with this prompt:
+
+"Read the file ~/kalshi-bot/pending_posts.json which contains
+unanalyzed social media posts from monitored accounts.
+
+For each post:
+1. Determine if it contains market-moving information
+2. If yes, identify which Kalshi markets would be affected
+3. Rate the signal strength from 0.0 to 1.0
+4. Explain WHY this matters for the market in 2-3 sentences
+5. Output a JSON array of signals to ~/kalshi-bot/active_signals.json
+
+Only output signals with strength > 0.4. Be conservative — false
+signals cost money.
+
+Then read ~/kalshi-bot/active_signals.json and send a Discord
+alert for each signal above 0.7 strength:
+'🚨 SOCIAL SIGNAL: [explanation] | Markets: [tickers] |
+Confidence: [X]% | Source: @[username]'
+"
+</pre>
+        <h4>Why this works</h4>
+        <ul>
+          <li>Humans can read a tweet and understand its implications in seconds</li>
+          <li>But humans can't monitor 50 accounts 24/7</li>
+          <li>Hermes can read every post from every monitored account and flag the ones that matter</li>
+          <li>The LLM understands context, sarcasm, implications — not just keywords</li>
+          <li>This gives you the same analytical ability as a team of 10 human analysts, running 24/7, for the cost of a Pi</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hub-scenario" data-hub-idx="43">
+      <div class="hub-title">&#128176; Step 4: Connect to Kalshi Trading</div>
+      <div class="hub-expand">
+        <h4>From signal to trade</h4>
+        <pre style="color:var(--green);background:rgba(0,0,0,0.4);padding:1rem;border-radius:6px;font-size:0.72rem;overflow-x:auto;line-height:1.6">
+#!/usr/bin/env python3
+"""Execute trades on Kalshi based on social signals."""
+
+import requests, json, os, base64
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import padding
+
+KALSHI_API = "https://external-api.kalshi.com/trade-api/v2"
+API_KEY = os.environ["KALSHI_API_KEY"]
+PRIVATE_KEY_PATH = os.path.expanduser("~/.kalshi/private_key.pem")
+
+def load_private_key():
+    with open(PRIVATE_KEY_PATH, "rb") as f:
+        return serialization.load_pem_private_key(f.read(), password=None)
+
+def sign_request(method, path, body=""):
+    key = load_private_key()
+    timestamp = str(int(time.time() * 1000))
+    message = f"{timestamp}{method}{path}{body}"
+    signature = key.sign(message.encode(), padding.PKCS1v15(), hashes.SHA256())
+    return base64.b64encode(signature).decode(), timestamp
+
+def place_order(ticker, side, count, price_cents):
+    """Place a limit order on Kalshi."""
+    path = "/v2/portfolio/orders"
+    body = json.dumps({
+        "ticker": ticker,
+        "side": side,  # "yes" or "no"
+        "count": count,
+        "type": "limit",
+        "price": price_cents
+    })
+    sig, ts = sign_request("POST", path, body)
+    headers = {
+        "KALSHI-ACCESS-KEY": API_KEY,
+        "KALSHI-ACCESS-SIGNATURE": sig,
+        "KALSHI-ACCESS-TIMESTAMP": ts,
+        "Content-Type": "application/json"
+    }
+    r = requests.post(f"{KALSHI_API}{path}", headers=headers, data=body)
+    return r.json()
+
+def get_market_price(ticker):
+    """Get current market price for a ticker."""
+    r = requests.get(f"{KALSHI_API}/markets/{ticker}", timeout=10)
+    data = r.json().get("market", {})
+    return data
+
+# Example: Buy YES on KXBTC if social signal is strong
+# market = get_market_price("KXBTC")
+# if market:
+#     place_order("KXBTC", "yes", 50, 20)  # Buy 50 YES @ 20¢
+</pre>
+        <h4>Safety rules (CRITICAL)</h4>
+        <ul>
+          <li><strong>Never auto-trade on a single signal</strong> — require 2+ independent sources</li>
+          <li><strong>Position sizing:</strong> Max 2% of bankroll per trade</li>
+          <li><strong>Daily loss limit:</strong> Stop trading if down 5% in a day</li>
+          <li><strong>Kill switch:</strong> <code>touch ~/STOP_TRADING</code> halts all activity</li>
+          <li><strong>Paper trade first:</strong> Run in simulation mode for 30 days before risking real money</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 3: THE FULL PIPELINE -->
+  <div class="card" style="margin-top:1.5rem">
+    <h2>&#128260; Phase 3: The Full Pipeline</h2>
+    <p style="color:var(--dim);font-size:0.78rem;margin-bottom:1rem">How it all connects. From tweet to trade in under 60 seconds.</p>
+
+    <div class="hub-overview">
+      <div class="hub-node hub-node-cyan">
+        <span class="hub-node-icon">&#128240;</span>
+        <span class="hub-node-title">BIG NAMES POST</span>
+        <span class="hub-node-desc">Key figures post on X/Twitter. Most people scroll past. You don't.</span>
+      </div>
+      <div class="hub-arrow">&#8594;</div>
+      <div class="hub-node hub-node-green">
+        <span class="hub-node-icon">&#129302;</span>
+        <span class="hub-node-title">HERMES MONITORS</span>
+        <span class="hub-node-desc">Cron job polls xurl every 5 min. New posts saved to SQLite.</span>
+      </div>
+      <div class="hub-arrow">&#8594;</div>
+      <div class="hub-node hub-node-magenta">
+        <span class="hub-node-icon">&#129504;</span>
+        <span class="hub-node-title">LLM ANALYZES</span>
+        <span class="hub-node-desc">Hermes reads posts, understands implications, rates signal strength.</span>
+      </div>
+      <div class="hub-arrow">&#8594;</div>
+      <div class="hub-node hub-node-yellow">
+        <span class="hub-node-icon">&#128200;</span>
+        <span class="hub-node-title">MAP TO MARKETS</span>
+        <span class="hub-node-desc">Signal → Kalshi ticker. Check current price. Calculate edge.</span>
+      </div>
+      <div class="hub-arrow">&#8594;</div>
+      <div class="hub-node hub-node-cyan">
+        <span class="hub-node-icon">&#128176;</span>
+        <span class="hub-node-title">TRADE OR ALERT</span>
+        <span class="hub-node-desc">Auto-execute (high confidence) or DM you for approval (medium).</span>
+      </div>
+    </div>
+
+    <div class="info-box" style="margin-top:1rem">
+      <strong style="color:var(--cyan)">The edge:</strong> When a Fed governor hints at a rate cut on Twitter, it takes the market 15-60 minutes to fully price in. Your Hermes pipeline can detect, analyze, and act on that signal in under 60 seconds. You're not insider trading — you're just faster than everyone else at reading public information.<br><br>
+      <span class="highlight">This is how you stop being "dumb money" and start being the 3%.</span>
+    </div>
+  </div>
+
+  <!-- PHASE 4: ETHICAL BOUNDARIES -->
+  <div class="card" style="margin-top:1.5rem">
+    <h2>&#9878; Phase 4: Staying on the Right Side of the Line</h2>
+
+    <div class="tier-block" data-tier="teenager">
+      <p><strong>This system is legal.</strong> You're analyzing public social media posts — the same information anyone can see. You're just faster at processing it. This is no different from a hedge fund using NLP to analyze news feeds, except you're doing it on a Raspberry Pi for $3/year.</p>
+      <p><strong>What would be illegal:</strong> Trading on non-public information (like a friend who works at the Fed telling you the rate decision before it's announced). That's actual insider trading. What we're doing here is <em>public information analysis at machine speed</em>.</p>
+    </div>
+
+    <div class="tier-block" data-tier="indepth">
+      <p>The legal distinction is between <strong>material non-public information</strong> (illegal to trade on) and <strong>public information</strong> (legal to trade on, regardless of how fast you process it). Our system only processes publicly available social media posts. The speed advantage comes from automation, not from access to private information. This is the same legal framework that allows high-frequency trading firms to trade on public market data — they're just faster. The SEC has consistently held that speed of analysis of public information is not insider trading.</p>
+      <p><strong>Gray areas to avoid:</strong> (1) monitoring private/protected accounts, (2) using hacked or leaked data, (3) trading on information from someone with a fiduciary duty to keep it confidential, (4) coordinated trading with someone who has non-public information. Stick to public posts from public figures and you're fine.</p>
+    </div>
+
+    <div class="info-box" style="margin-top:1rem">
+      <strong style="color:var(--yellow)">⚠️ Disclaimer:</strong> This is educational content, not legal or financial advice. Prediction markets involve real money risk. Most people lose money. Do your own research. Trade responsibly. Not financial advice.
+    </div>
   </div>
 </section>
 

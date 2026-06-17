@@ -338,3 +338,24 @@ Bitcoin Above 100K just moved:
 
 📊 Edge: 64¢ — worth watching.
 ```
+
+### Social Intelligence Alert (with Hermes + xurl)
+
+```
+🚨 SOCIAL SIGNAL: Fed Governor hints at rate cut
+
+Source: @fedchair (Federal Reserve)
+Post: "Recent economic data suggests we may need to
+reconsider the current rate path. More to come at
+next week's meeting."
+
+📊 Markets affected: KXRATE, KXFED, KXINFLATION
+📈 Signal confidence: 82%
+💡 Why: Fed officials rarely hint at policy shifts
+   publicly. This suggests a rate cut is being
+   considered, which would push "Fed rate below X%"
+   markets higher.
+
+⏱️ Market typically prices this in within 15-60 min.
+   Current KXRATE price: 42¢ (was 38¢ yesterday)
+```
